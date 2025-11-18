@@ -56,7 +56,8 @@ Hive-level orchestrator for multi-shard & multi-hive networks.
 Atomic UI, logic, and OS primitives for Tape & OS builds.
 
 ---
-
+<div align="center">
+  <img src="./assets/asx-atomic-logo.png" width="180" />
 # 📦 Installation
 
 ```bash
@@ -66,5 +67,4 @@ npm install @asx/scxq2-engine
 npm install @asx/klh-orchestrator
 npm install @asx/asx-blocks-core
 
-<div align="center">
-  <img src="./assets/asx-atomic-logo.png" width="180" />
+
