@@ -33,3 +33,6 @@ It provides:
 
 All code is written in ASX LANGUAGE and is meant to be understandable and hackable.
 No placeholders; everything in this repo is a working baseline implementation.
+
+![ASX Atomic Logo](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjI2MCIgdmlld0JveD0iMCAwIDI2MCAyNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZS...
+
