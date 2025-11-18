@@ -1,0 +1,17 @@
+{
+  "@block": "panel",
+  "id": "demo",
+  "children": [
+    {
+      "@if": { "@var": "user.logged_in" },
+      "@then": {
+        "@block": "text",
+        "value": "Welcome back."
+      },
+      "@else": {
+        "@block": "text",
+        "value": "Please sign in."
+      }
+    }
+  ]
+}

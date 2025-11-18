@@ -1,0 +1,11 @@
+{
+  "name": "@asx/scxq2-engine",
+  "version": "0.1.0-alpha",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "node dist/test.js || node test.js || exit 0"
+  },
+  "dependencies": {}
+}

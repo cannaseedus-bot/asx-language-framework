@@ -1,0 +1,9 @@
+{
+  "hive": "demo-hive",
+  "tapes": [
+    {
+      "id": "demo-tape",
+      "path": "./tape"
+    }
+  ]
+}

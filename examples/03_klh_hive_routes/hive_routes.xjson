@@ -1,0 +1,17 @@
+{
+  "@klh": "hive.routes",
+  "hives": {
+    "dashboard": { "port": 3001 },
+    "users": { "port": 3002 },
+    "intel": { "port": 3003 }
+  },
+  "routes": [
+    {
+      "id": "user.login",
+      "from": "dashboard",
+      "to": "users",
+      "pattern": "/login",
+      "handler": "@job:user.login"
+    }
+  ]
+}

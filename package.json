@@ -1,0 +1,13 @@
+{
+  "name": "asx-language-framework",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "ASX Language Framework — XJSON + SCXQ2 + KLH + ASX Blocks.",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "demo-tape",
+  "name": "Demo Tape",
+  "brains": [
+    {
+      "id": "greeting",
+      "xjson_path": "brains/greeting.xjson"
+    }
+  ]
+}
