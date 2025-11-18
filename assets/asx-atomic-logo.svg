@@ -1,0 +1,35 @@
+<svg width="260" height="260" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#16F2AA" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#16F2AA" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#16F2AA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="260" height="260" fill="#020308" />
+
+  <!-- Outer halo -->
+  <circle cx="130" cy="130" r="110" fill="url(#glow)" />
+
+  <!-- Core ring -->
+  <circle cx="130" cy="130" r="90" fill="none" stroke="#16F2AA" stroke-width="4" stroke-dasharray="10 10" />
+
+  <!-- Inner core -->
+  <circle cx="130" cy="130" r="46" fill="#16F2AA" />
+
+  <!-- Atomic orbit 1 -->
+  <ellipse cx="130" cy="130" rx="96" ry="52" fill="none" stroke="#16F2AA" stroke-width="2" transform="rotate(22 130 130)" />
+  <!-- Atomic orbit 2 -->
+  <ellipse cx="130" cy="130" rx="96" ry="52" fill="none" stroke="#16F2AA" stroke-width="2" transform="rotate(-22 130 130)" />
+
+  <!-- ASX label -->
+  <text x="50%" y="50%" fill="#020308" font-size="34" font-family="Orbitron, monospace" text-anchor="middle" dy="10">
+    ASX
+  </text>
+
+  <!-- Subtitle -->
+  <text x="50%" y="82%" fill="#16F2AA" font-size="12" font-family="monospace" text-anchor="middle" opacity="0.85">
+    ATOMIC SUPER POWER
+  </text>
+</svg>
