@@ -1,4 +1,4 @@
-<ing src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/asx-atomic-logo.svg">
+<img src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/asx-atomic-logo.svg" />
 
 
 # ASX Language Framework
