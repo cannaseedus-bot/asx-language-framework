@@ -1,8 +1,13 @@
 <img style="margin:auto;text-align:center;width:300px;" src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/asx-atomic-logo.svg" />
+
 ![ASX](https://img.shields.io/badge/ATOMIC-SUPER--POWER-16F2AA?style=for-the-badge&logo=data:image/svg+xml;base64,...)
+
 ![XJSON](https://img.shields.io/badge/XJSON-RUNTIME-0F9D58?style=for-the-badge)
+
 ![SCXQ2](https://img.shields.io/badge/SCXQ2-COMPILER-4285F4?style=for-the-badge)
+
 ![KLH](https://img.shields.io/badge/KLH-ORCHESTRATOR-DB4437?style=for-the-badge)
+
 ![HIVE](https://img.shields.io/badge/MULTI--HIVE-000000?style=for-the-badge)
 
 
