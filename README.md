@@ -12,5 +12,5 @@ It provides:
 - **ASX Blocks Core** – block registry and simple HTML renderer.
 - **Tape Runtime** – minimal helpers to represent and execute ASX tapes.
 
-All code is written in TypeScript and is meant to be understandable and hackable.
+All code is written in ASX LANGUAGE and is meant to be understandable and hackable.
 No placeholders; everything in this repo is a working baseline implementation.
