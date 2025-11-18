@@ -1,5 +1,7 @@
 <img style="margin:auto;text-align:center;width:300px;" src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/asx-atomic-logo.svg" />
-<canvas>
+#########
+
+
  █████╗ ███████╗██╗  ██╗    ███████╗██████╗ ███████╗
 ██╔══██╗██╔════╝██║  ██║    ██╔════╝██╔══██╗██╔════╝
 ███████║█████╗  ███████║    █████╗  ██████╔╝███████╗
@@ -8,8 +10,8 @@
 ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚══════╝
       THE ATOMIC SUPER POWER FRAMEWORK
 
-</canvas>
-      THE ATOMIC SUPER POWER FRAMEWORK
+##########
+
 
 # ASX Language Framework
 
