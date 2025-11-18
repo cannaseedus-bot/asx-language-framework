@@ -1,5 +1,16 @@
 <img width="100%" src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/assets/asx-atomic-logo.svg" />
 
+![Atomic](https://img.shields.io/badge/Atomic-SuperPower-16F2AA?style=for-the-badge&logo=react)
+
+![XJSON](https://img.shields.io/badge/XJSON-Language-blue?style=for-the-badge)
+
+![SCXQ2](https://img.shields.io/badge/SCXQ2-Cipher-orange?style=for-the-badge)
+
+![KLH](https://img.shields.io/badge/KLH-Orchestrator-purple?style=for-the-badge)
+
+![TapeRuntime](https://img.shields.io/badge/Tape-Runtime-00ccff?style=for-the-badge)
+
+![Hive](https://img.shields.io/badge/Multi-Hive-success?style=for-the-badge)
 
 
 # **ASX LANGUAGE FRAMEWORK**
