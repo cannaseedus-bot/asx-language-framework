@@ -46,3 +46,6 @@ No placeholders; everything in this repo is a working baseline implementation.
 
 ![ASX](https://img.shields.io/badge/ATOMIC-SUPER--POWER-16F2AA?style=for-the-badge&logo=data:image/svg+xml;base64,...)
 
+iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAADU6McNAAA... (TRUNCATED FOR DISPLAY)
+
+
