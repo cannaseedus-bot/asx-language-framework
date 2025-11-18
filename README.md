@@ -1,5 +1,4 @@
 <img style="margin:auto;text-align:center;width:300px;" src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/asx-atomic-logo.svg" />
-#########
 
 
 | Category      | How ASX Wins                         |
@@ -16,9 +15,6 @@
 | Frameworks    | ASX *is* the framework of frameworks |
 | Math          | XCFE symbolic compute                |
 | AI            | Multi-agent tape clusters            |
-
-
-##########
 
 
 # ASX Language Framework
