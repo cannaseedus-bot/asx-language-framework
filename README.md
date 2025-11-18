@@ -54,10 +54,10 @@ Hive-level orchestrator for multi-shard & multi-hive networks.
 
 ### **@asx/asx-blocks-core**
 Atomic UI, logic, and OS primitives for Tape & OS builds.
-
----
 <div align="center">
   <img src="./assets/asx-atomic-logo.png" width="180" />
+---
+
 # 📦 Installation
 
 ```bash
