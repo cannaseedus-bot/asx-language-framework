@@ -2,13 +2,21 @@
 #########
 
 
- █████╗ ███████╗██╗  ██╗    ███████╗██████╗ ███████╗
-██╔══██╗██╔════╝██║  ██║    ██╔════╝██╔══██╗██╔════╝
-███████║█████╗  ███████║    █████╗  ██████╔╝███████╗
-██╔══██║██╔══╝  ██╔══██║    ██╔══╝  ██╔══██╗╚════██║
-██║  ██║███████╗██║  ██║    ███████╗██║  ██║███████║
-╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝    ╚══════╝╚═╝  ╚═╝╚══════╝
-      THE ATOMIC SUPER POWER FRAMEWORK
+| Category      | How ASX Wins                         |
+| ------------- | ------------------------------------ |
+| Front-end     | Atomic Blocks replace React/Vue      |
+| Back-end      | KLH + XJSON replaces Express/Nest    |
+| CLI           | Basher-XJSON universal CLI           |
+| Documentation | Self-executing XJSON docs            |
+| CSS           | Atomic CSS engine                    |
+| Testing       | XJSON deterministic test blocks      |
+| IoT           | SCXQ2 compressed device control      |
+| Robotics      | KLH command routing                  |
+| Mobile        | PRIME OS PWA                         |
+| Frameworks    | ASX *is* the framework of frameworks |
+| Math          | XCFE symbolic compute                |
+| AI            | Multi-agent tape clusters            |
+
 
 ##########
 
