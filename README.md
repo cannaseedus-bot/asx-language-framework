@@ -1,1 +1,1 @@
-<img src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/assets/asx-atomic-logo.svg" />
+<img width="100%" src="https://github.com/cannaseedus-bot/asx-language-framework/blob/main/assets/asx-atomic-logo.svg" />
