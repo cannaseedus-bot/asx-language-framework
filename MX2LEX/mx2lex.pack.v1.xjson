@@ -1,0 +1,140 @@
+{
+  "@id": "asx://schema/mx2lex.pack.v1",
+  "@type": "asx.schema.v1",
+  "@schema": "xjson://schema/core/v1",
+  "@status": "FROZEN",
+  "@version": "1.0.0",
+  "@rules": {
+    "deterministic_build": true,
+    "stable_ids": true,
+    "offline": true,
+    "no_external_schema_urls": true
+  },
+  "@doc": {
+    "name": "MX2LEX Pack",
+    "purpose": "A compiled, normalized artifact: grammar + symbol table + FA export + hashes, used by oracle runtimes in JS/Python/Java."
+  },
+  "required": [
+    "@type",
+    "@meta",
+    "input",
+    "canon",
+    "symbols",
+    "fa",
+    "hashes"
+  ],
+  "properties": {
+    "@type": { "const": "mx2lex.pack.v1" },
+    "@meta": {
+      "type": "object",
+      "required": ["id", "semver", "built_by", "built_ts"],
+      "properties": {
+        "id": { "type": "string", "description": "Pack id (namespaced)" },
+        "semver": { "type": "string" },
+        "built_by": { "type": "string", "description": "Tool identifier (e.g., mx2lex-cli@1.0.0)" },
+        "built_ts": { "type": "integer", "description": "Unix ms timestamp" }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["grammar_ref", "grammar_hash"],
+      "properties": {
+        "grammar_ref": {
+          "type": "string",
+          "description": "asx://schema/lex.grammar.v1 instance reference (path or id)"
+        },
+        "grammar_hash": { "type": "string", "description": "sha256:<hex> of canonicalized grammar instance" }
+      }
+    },
+    "canon": {
+      "type": "object",
+      "required": ["ordering", "unicode_nf", "stable_sort"],
+      "properties": {
+        "ordering": { "const": "lexicographic_keys" },
+        "unicode_nf": { "enum": ["NFC", "NFKC"] },
+        "stable_sort": {
+          "type": "object",
+          "required": ["tokens", "productions", "nonterminals"],
+          "properties": {
+            "tokens": { "enum": ["by_id_then_name"] },
+            "productions": { "enum": ["by_lhs_then_id"] },
+            "nonterminals": { "enum": ["lexicographic"] }
+          }
+        }
+      }
+    },
+    "symbols": {
+      "type": "object",
+      "required": ["tokens", "nonterminals", "start"],
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "description": "Normalized token table (stable ordering).",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "kind", "flags"],
+            "properties": {
+              "id": { "type": "integer" },
+              "name": { "type": "string" },
+              "kind": { "enum": ["literal", "regex", "class", "special"] },
+              "spec": { "type": "object", "description": "Token spec body normalized (literal/regex/class)" },
+              "flags": {
+                "type": "object",
+                "properties": { "skip": { "type": "boolean" }, "eof": { "type": "boolean" } }
+              }
+            }
+          }
+        },
+        "nonterminals": { "type": "array", "items": { "type": "string" } },
+        "start": { "type": "string" }
+      }
+    },
+    "fa": {
+      "type": "object",
+      "description": "Deterministic finite automaton export for legality checks.",
+      "required": ["type", "alphabet", "states", "start_state", "accepting", "transitions"],
+      "properties": {
+        "type": { "enum": ["DFA"] },
+        "alphabet": { "type": "array", "items": { "type": "integer" }, "description": "Token ids used as symbols" },
+        "states": { "type": "array", "items": { "type": "integer" }, "description": "State ids" },
+        "start_state": { "type": "integer" },
+        "accepting": { "type": "array", "items": { "type": "integer" } },
+        "transitions": {
+          "type": "array",
+          "description": "Stable transition list (sorted by from, symbol).",
+          "items": {
+            "type": "object",
+            "required": ["from", "sym", "to"],
+            "properties": {
+              "from": { "type": "integer" },
+              "sym": { "type": "integer" },
+              "to": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "required": ["pack_self", "fa_hash", "symbols_hash"],
+      "properties": {
+        "pack_self": { "type": "string", "description": "sha256:SELF (computed by verifier)" },
+        "fa_hash": { "type": "string", "description": "sha256:<hex> of FA canonical form" },
+        "symbols_hash": { "type": "string", "description": "sha256:<hex> of symbols canonical form" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "description": "Optional bounded policy for oracle usage (trace caps, etc.)",
+      "properties": {
+        "trace": {
+          "type": "object",
+          "properties": {
+            "max_steps": { "type": "integer", "minimum": 1 },
+            "max_errors": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    }
+  }
+}

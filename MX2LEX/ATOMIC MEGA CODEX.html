@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ASX ATOMIC MEGA CODEX — Hazard Ω Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#020712" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #020409;
+      --bg-alt: #050912;
+      --panel: #050a14;
+      --border: #16f2aa;
+      --border-soft: rgba(22,242,170,0.25);
+      --accent: #00ffd0;
+      --accent-soft: rgba(0,255,208,0.12);
+      --accent2: #44ff88;
+      --danger: #f25c5c;
+      --text: #e8fff6;
+      --muted: #7e8a92;
+      --shadow-soft: 0 18px 48px rgba(0,0,0,0.75);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+
+      /* Hazard layer */
+      --hazard: #ffb300;
+      --hazard-soft: rgba(255,179,0,0.16);
+      --hazard-glow: 0 0 16px rgba(255,179,0,0.65);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 0 0, #041725 0, #020409 55%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* HUD HEADER ---------------------------------------------------------- */
+
+    header.hud {
+      position: relative;
+      z-index: 10;
+      background: radial-gradient(circle at 0 0, rgba(0,255,153,0.12) 0, rgba(0,0,0,0.7) 45%);
+      border-bottom: 1px solid rgba(0,255,153,0.35);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.66);
+    }
+
+    header .wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo-mark { display: flex; align-items: center; gap: 0.6rem; }
+
+    .logo-glyph {
+      width: 32px;
+      height: 32px;
+      border-radius: 40% 65% 38% 70%;
+      background: radial-gradient(circle at 30% 20%, #00ffd0 0, #059669 35%, #020409 80%);
+      box-shadow:
+        0 0 22px rgba(0,255,153,0.6),
+        0 0 60px rgba(0,0,0,0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-glyph::after {
+      content: "";
+      position: absolute;
+      inset: 28%;
+      border-radius: inherit;
+      border: 1px solid rgba(0,0,0,0.55);
+      box-shadow: inset 0 0 14px rgba(0,0,0,0.8);
+    }
+
+    .logo-text-main {
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .logo-text-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hud-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    .led {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #0f172a;
+      box-shadow: 0 0 0 rgba(22,242,170,0);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .led.on {
+      background: var(--accent2);
+      box-shadow:
+        0 0 12px rgba(68,255,136,0.9),
+        0 0 32px rgba(0,0,0,0.85);
+    }
+
+    .hud-pill {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 0.12rem 0.7rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* LAYOUT -------------------------------------------------------------- */
+
+    .shell {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      max-width: 1440px;
+      margin: 0.5rem auto 1rem auto;
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      gap: 1rem;
+      height: calc(100vh - 64px);
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        padding-inline: 0.75rem;
+      }
+    }
+
+    /* SIDEBAR / TABS ------------------------------------------------------ */
+
+    .nav-panel {
+      background: radial-gradient(circle at 0 0, #071827 0, #020713 65%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow: hidden;
+    }
+
+    .nav-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .nav-title span:last-child { font-size: 0.7rem; color: var(--accent); }
+
+    .nav-search { position: relative; }
+    .nav-search input {
+      width: 100%;
+      padding: 0.4rem 0.7rem;
+      padding-left: 1.6rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(51,65,85,0.95);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.86) 0, #020409 55%);
+      color: var(--text);
+      font-size: 0.78rem;
+      outline: none;
+    }
+    .nav-search input::placeholder { color: rgba(148,163,184,0.8); }
+    .nav-search-icon {
+      position: absolute;
+      left: 0.55rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: rgba(148,163,184,0.9);
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      overflow: auto;
+    }
+
+    .nav-item {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.32rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+      cursor: pointer;
+      transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: radial-gradient(circle at 0 0, var(--hazard-soft) 0, rgba(15,23,42,0.9) 65%);
+      border-color: var(--hazard);
+      transform: translateX(3px);
+      box-shadow: var(--hazard-glow);
+    }
+
+    .nav-item.active {
+      background: radial-gradient(circle at 0 0, rgba(255,179,0,0.28) 0, rgba(6,12,20,0.98) 65%);
+      border-color: var(--hazard);
+      box-shadow:
+        0 0 0 1px rgba(255,179,0,0.35),
+        0 0 22px rgba(255,179,0,0.65);
+    }
+
+    .nav-item-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.3rem;
+    }
+
+    .nav-item-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-chip {
+      font-size: 0.65rem;
+      padding: 0.05rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      color: rgba(148,163,184,0.9);
+    }
+
+    .nav-chip.hazard { border-color: var(--hazard); color: var(--hazard); }
+
+    /* MAIN PANEL ---------------------------------------------------------- */
+
+    .main-panel {
+      background: radial-gradient(circle at 0 0, #071827 0, #020409 65%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,23,42,0.9);
+      box-shadow: var(--shadow-soft);
+      padding: 1rem 1.1rem 1.1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+      margin-bottom: 0.35rem;
+    }
+
+    .main-title-block { display: flex; flex-direction: column; gap: 0.2rem; }
+    .main-title {
+      font-size: 0.92rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .main-subtitle {
+      font-size: 0.74rem;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .main-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: 0.7rem;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 0.16rem 0.6rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: rgba(148,163,184,0.9);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.85) 0, #020409 68%);
+    }
+    .badge.hot { border-color: var(--hazard); color: var(--hazard); box-shadow: var(--hazard-glow); }
+    .badge.mode { border-color: rgba(22,242,170,0.9); color: var(--accent); }
+
+    /* VIEWPORT ------------------------------------------------------------ */
+
+    .tape-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      margin-top: 0.3rem;
+    }
+
+    .tape-view {
+      position: absolute;
+      inset: 0;
+      padding: 0.65rem 0.4rem 0.7rem 0.2rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(18px);
+      transition:
+        opacity 0.35s ease-out,
+        transform 0.35s ease-out;
+      overflow: auto;
+      scrollbar-width: thin;
+    }
+
+    .tape-view::-webkit-scrollbar { width: 6px; }
+    .tape-view::-webkit-scrollbar-track { background: #050915; }
+    .tape-view::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #16f2aa, #fbbf24);
+      border-radius: 999px;
+    }
+
+    .tape-view.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* CONTENT UTILITIES --------------------------------------------------- */
+
+    h2, h3, h4 {
+      margin: 0.5rem 0 0.3rem 0;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    h2 { font-size: 0.9rem; color: var(--accent); }
+    h3 { font-size: 0.84rem; color: var(--accent2); }
+    h4 { font-size: 0.8rem; color: var(--text); }
+
+    p {
+      margin: 0.25rem 0 0.35rem 0;
+      font-size: 0.8rem;
+      color: #d1fae5;
+      line-height: 1.4;
+    }
+
+    code, pre {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.74rem;
+    }
+
+    pre {
+      margin: 0.35rem 0 0.65rem 0;
+      padding: 0.55rem 0.7rem;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at 0 0, #020617 0, #020617 55%);
+      border: 1px solid rgba(30,64,175,0.8);
+      color: #e0f2fe;
+      overflow-x: auto;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+
+    .card {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.9) 0, #020617 65%);
+      box-shadow: 0 8px 26px rgba(0,0,0,0.9);
+      padding: 0.5rem 0.65rem 0.6rem 0.65rem;
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .divider {
+      height: 1px;
+      border-radius: 999px;
+      background: linear-gradient(to right, rgba(15,23,42,0.2), rgba(22,242,170,0.7), rgba(251,191,36,0.9), rgba(15,23,42,0.2));
+      margin: 0.3rem 0 0.4rem 0;
+    }
+
+    .note {
+      font-size: 0.74rem;
+      color: #f9fafb;
+      background: rgba(22,163,74,0.16);
+      border-radius: 11px;
+      border: 1px solid rgba(22,163,74,0.6);
+      padding: 0.35rem 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .note.hazard {
+      background: rgba(251,191,36,0.16);
+      border-color: rgba(251,191,36,0.9);
+      color: #fef3c7;
+    }
+    .note.danger {
+      background: rgba(242, 92, 92, 0.14);
+      border-color: rgba(242, 92, 92, 0.9);
+      color: #ffe4e6;
+    }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.2rem 0 0.3rem 0; }
+    .pill {
+      border-radius: 999px;
+      padding: 0.12rem 0.5rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      font-size: 0.68rem;
+      color: rgba(209,213,219,0.95);
+    }
+    .pill.mode { border-color: rgba(22,242,170,0.9); color: var(--accent); }
+    .pill.hazard { border-color: var(--hazard); color: var(--hazard); }
+
+    .mono-small { font-size: 0.72rem; color: var(--muted); }
+
+    /* LOADER -------------------------------------------------------------- */
+    .loader {
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      padding: .75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.75) 0, #020409 75%);
+      margin: .65rem 0;
+    }
+    .loader-title {
+      font-size: .78rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .loader-sub {
+      font-size: .74rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HUD HEADER -->
+  <header class="hud">
+    <div class="wrap">
+      <div class="logo-mark">
+        <div class="logo-glyph"></div>
+        <div>
+          <div class="logo-text-main" id="hud-title">ASX ATOMIC MEGA CODEX</div>
+          <div class="logo-text-sub" id="hud-subtitle">XCFE · XJSON · K’UHUL · AST · ATOMIC · CMS · RLHF</div>
+        </div>
+      </div>
+      <div class="hud-status">
+        <div class="led on" id="hud-led"></div>
+        <span id="hud-status-text">ONLINE · LOCAL ASXR</span>
+        <span class="hud-pill" id="active-tape-pill">TAPE: LOADING</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SHELL -->
+  <div class="shell">
+
+    <!-- NAV -->
+    <aside class="nav-panel">
+      <div class="nav-title">
+        <span>CODEX TAPES</span>
+        <span id="nav-meta">ATOMIC INDEX Ω</span>
+      </div>
+
+      <div class="nav-search">
+        <span class="nav-search-icon">⌕</span>
+        <input id="nav-filter" placeholder="filter: xjson, xcfe, cms, rlhf, kuhu…" />
+      </div>
+
+      <ul class="nav-list" id="nav-list"></ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-panel">
+      <div class="main-header">
+        <div class="main-title-block">
+          <div class="main-title" id="main-title">ASX CODEX</div>
+          <div class="main-subtitle" id="main-subtitle">
+            Loading codex…
+          </div>
+        </div>
+        <div class="main-meta" id="main-badges">
+          <span class="badge hot">HAZARD · ATOMIC Ω</span>
+          <span class="badge mode">LOCAL-ONLY · OFFLINE-FIRST</span>
+        </div>
+      </div>
+
+      <div class="tape-viewport" id="tape-viewport">
+        <!-- Renderer mounts tape views here -->
+        <section class="tape-view active" id="tape-loading">
+          <div class="loader">
+            <div class="loader-title">BOOT</div>
+            <div class="divider"></div>
+            <div class="loader-sub" id="boot-msg">
+              Fetching <code>atomic_guide.codex.scxq2</code> (fallback: <code>atomic_guide.codex.json</code>)…
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /* ============================================================
+       ASX ATOMIC GUIDE — PROJECTION RENDERER
+       - HTML is projection only
+       - JSON/SCXQ2 is authority
+       ============================================================ */
+
+    const PATH_SCXQ2 = "./atomic_guide.codex.scxq2";
+    const PATH_JSON  = "./atomic_guide.codex.json";
+
+    // --------- Utilities
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function stableStringify(x) {
+      // Deterministic stringify for objects (sorted keys)
+      if (x === null || typeof x !== "object") return JSON.stringify(x);
+      if (Array.isArray(x)) return "[" + x.map(stableStringify).join(",") + "]";
+      const keys = Object.keys(x).sort();
+      return "{" + keys.map(k => JSON.stringify(k) + ":" + stableStringify(x[k])).join(",") + "}";
+    }
+
+    // --------- Minimal SCXQ2 decoder adapter
+    // Supports:
+    // 1) raw JSON text
+    // 2) base64 JSON text
+    // 3) "SCXQ2:" prefixed payload
+    // 4) JSON envelope: { "@mode": "...", "payload": "..." }
+    //
+    // NOTE: This is a projection-side decoder. Your canonical SCXQ2 DICT/FIELD/LANE/EDGE
+    // packer can emit any of the supported shapes above without changing HTML.
+    const SCXQ2 = {
+      unpack(text) {
+        const t = (text || "").trim();
+
+        // Envelope object?
+        if (t.startsWith("{")) {
+          const obj = JSON.parse(t);
+          if (obj && typeof obj === "object" && typeof obj.payload === "string") {
+            return SCXQ2.unpack(obj.payload);
+          }
+          // If it's just JSON codex, return it.
+          return obj;
+        }
+
+        // SCXQ2: prefix
+        if (t.startsWith("SCXQ2:")) {
+          const b64 = t.slice("SCXQ2:".length).trim();
+          const json = SCXQ2._b64ToUtf8(b64);
+          return JSON.parse(json);
+        }
+
+        // Looks like base64? (heuristic)
+        if (/^[A-Za-z0-9+/=\s]+$/.test(t) && t.length > 64) {
+          try {
+            const json = SCXQ2._b64ToUtf8(t);
+            if (json.trim().startsWith("{") || json.trim().startsWith("[")) {
+              return JSON.parse(json);
+            }
+          } catch {}
+        }
+
+        // Fallback raw JSON parse
+        return JSON.parse(t);
+      },
+
+      _b64ToUtf8(b64) {
+        // atob -> binary string -> UTF-8
+        const bin = atob(b64.replace(/\s/g, ""));
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+      }
+    };
+
+    // --------- DOM refs
+
+    const navListEl      = document.getElementById("nav-list");
+    const navFilterInput = document.getElementById("nav-filter");
+    const mainTitleEl    = document.getElementById("main-title");
+    const mainSubtitleEl = document.getElementById("main-subtitle");
+    const activeTapePill = document.getElementById("active-tape-pill");
+    const viewportEl     = document.getElementById("tape-viewport");
+    const bootMsgEl      = document.getElementById("boot-msg");
+    const badgeWrapEl    = document.getElementById("main-badges");
+    const hudTitleEl     = document.getElementById("hud-title");
+    const hudSubtitleEl  = document.getElementById("hud-subtitle");
+    const navMetaEl      = document.getElementById("nav-meta");
+
+    // --------- State
+
+    const STATE = {
+      guide: null,
+      filteredTapes: [],
+      activeTapeId: null
+    };
+
+    // --------- Rendering
+
+    function renderBadges(badges) {
+      badgeWrapEl.innerHTML = "";
+      for (const b of (badges || [])) {
+        const span = document.createElement("span");
+        const kind = (b.kind || "").toLowerCase();
+        span.className = "badge" + (kind === "hazard" ? " hot" : kind === "mode" ? " mode" : "");
+        span.textContent = b.label || "";
+        badgeWrapEl.appendChild(span);
+      }
+    }
+
+    function buildNav(items) {
+      navListEl.innerHTML = "";
+      for (const tape of items) {
+        const li = document.createElement("li");
+        li.className = "nav-item";
+        li.dataset.tapeId = tape.id;
+
+        const firstTag = (tape.tags && tape.tags[0]) ? tape.tags[0] : "core";
+        const chipHazard = /omega|hazard|security|goat|rlhf|cms/i.test(firstTag) || /omega|hazard|security|goat|rlhf|cms/i.test((tape.id||""));
+        const chipClass = chipHazard ? "nav-chip hazard" : "nav-chip";
+
+        const titleRow = document.createElement("div");
+        titleRow.className = "nav-item-title";
+        titleRow.innerHTML = `<span>${escapeHtml(tape.label || tape.id)}</span><span class="${chipClass}">${escapeHtml(firstTag)}</span>`;
+
+        const subRow = document.createElement("div");
+        subRow.className = "nav-item-sub";
+        subRow.textContent = tape.subtitle || "";
+
+        li.appendChild(titleRow);
+        li.appendChild(subRow);
+
+        li.addEventListener("click", () => activateTape(tape.id));
+        navListEl.appendChild(li);
+      }
+      setNavActive(STATE.activeTapeId);
+    }
+
+    function setNavActive(tapeId) {
+      for (const li of navListEl.querySelectorAll(".nav-item")) {
+        li.classList.toggle("active", li.dataset.tapeId === tapeId);
+      }
+    }
+
+    function renderTapeView(tape) {
+      // One tape view at a time (projection)
+      viewportEl.innerHTML = "";
+
+      const section = document.createElement("section");
+      section.className = "tape-view active";
+      section.id = "tape-" + tape.id;
+      section.dataset.tapeId = tape.id;
+
+      // Layout heuristic: if sections look like paired cards, use grid-2 per two cards.
+      // We keep it simple: render all sections in a responsive flow, using grid-2 for "card".
+      const cards = (tape.sections || []).filter(s => s && s.type === "card");
+      const nonCards = (tape.sections || []).filter(s => !s || s.type !== "card");
+
+      if (cards.length) {
+        // Render in groups of 2 cards (grid-2)
+        for (let i = 0; i < cards.length; i += 2) {
+          const grid = document.createElement("div");
+          grid.className = "grid-2";
+          grid.appendChild(renderSection(cards[i]));
+          if (cards[i + 1]) grid.appendChild(renderSection(cards[i + 1]));
+          section.appendChild(grid);
+        }
+      }
+
+      // Render non-card sections (rare) as cards too, but in single column.
+      for (const s of nonCards) {
+        section.appendChild(renderSection(s));
+      }
+
+      viewportEl.appendChild(section);
+    }
+
+    function renderSection(sec) {
+      const wrap = document.createElement("div");
+      wrap.className = "card";
+
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = sec.title || "SECTION";
+      wrap.appendChild(title);
+
+      const divider = document.createElement("div");
+      divider.className = "divider";
+      wrap.appendChild(divider);
+
+      for (const block of (sec.content || [])) {
+        wrap.appendChild(renderBlock(block));
+      }
+      return wrap;
+    }
+
+    function renderBlock(block) {
+      const t = (block && block.type) ? block.type : "text";
+
+      if (t === "text") {
+        const p = document.createElement("p");
+        p.textContent = (block && block.value != null) ? String(block.value) : "";
+        return p;
+      }
+
+      if (t === "code") {
+        const pre = document.createElement("pre");
+        let val = (block && block.value != null) ? block.value : "";
+        if (typeof val === "object") {
+          // stable stringify for deterministic view
+          try { val = JSON.parse(JSON.stringify(val)); } catch {}
+          val = JSON.stringify(val, null, 2);
+        } else {
+          val = String(val);
+        }
+        pre.textContent = val;
+        return pre;
+      }
+
+      if (t === "note") {
+        const div = document.createElement("div");
+        const kind = (block && block.kind) ? String(block.kind).toLowerCase() : "";
+        div.className = "note" + (kind ? " " + kind : "");
+        div.textContent = (block && block.value != null) ? String(block.value) : "";
+        return div;
+      }
+
+      if (t === "pill_row") {
+        const row = document.createElement("div");
+        row.className = "pill-row";
+        const arr = Array.isArray(block.value) ? block.value : [];
+        for (const item of arr) {
+          const span = document.createElement("span");
+          const k = (item && item.kind) ? String(item.kind).toLowerCase() : "";
+          span.className = "pill" + (k ? " " + k : "");
+          span.textContent = (item && item.label != null) ? String(item.label) : String(item);
+          row.appendChild(span);
+        }
+        return row;
+      }
+
+      if (t === "list") {
+        const ul = document.createElement("ul");
+        ul.style.margin = "0.25rem 0 0.4rem 1rem";
+        ul.style.fontSize = "0.78rem";
+        ul.style.color = "#e5e7eb";
+        const items = Array.isArray(block.value) ? block.value : [];
+        for (const it of items) {
+          const li = document.createElement("li");
+          if (it && typeof it === "object") {
+            const strong = it.strong ? `<strong>${escapeHtml(it.strong)}</strong>` : "";
+            const rest = it.text ? escapeHtml(it.text) : "";
+            li.innerHTML = strong ? `${strong} — ${rest}` : rest;
+          } else {
+            li.textContent = String(it);
+          }
+          ul.appendChild(li);
+        }
+        return ul;
+      }
+
+      // Unknown block type -> safe text
+      const p = document.createElement("p");
+      p.textContent = (block && block.value != null) ? String(block.value) : "";
+      return p;
+    }
+
+    // --------- Activation & routing
+
+    function activateTape(tapeId) {
+      const guide = STATE.guide;
+      if (!guide) return;
+
+      const tape = (guide.tapes || []).find(t => t.id === tapeId) || (guide.tapes || [])[0];
+      if (!tape) return;
+
+      STATE.activeTapeId = tape.id;
+
+      mainTitleEl.textContent = tape.label || tape.id;
+      mainSubtitleEl.textContent = tape.subtitle || "";
+
+      activeTapePill.textContent = "TAPE: " + String(tape.id).toUpperCase();
+      renderTapeView(tape);
+      setNavActive(tape.id);
+
+      const hash = "#tape-" + tape.id;
+      if (location.hash !== hash) history.replaceState(null, "", hash);
+
+      sendTapeHeartbeat(tape.id, tape.label || tape.id);
+    }
+
+    function restoreFromHashOrDefault() {
+      const guide = STATE.guide;
+      if (!guide || !(guide.tapes || []).length) return;
+
+      const h = location.hash.startsWith("#tape-") ? location.hash.slice("#tape-".length) : "";
+      const initial = h || (guide.tapes[0] && guide.tapes[0].id) || "";
+      activateTape(initial);
+    }
+
+    function sendTapeHeartbeat(tapeId, title) {
+      // Optional local ping
+      try { fetch("/api/local/" + encodeURIComponent(tapeId)); } catch {}
+
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "TAPE_HEARTBEAT",
+          tape: tapeId,
+          url: location.pathname,
+          time: Date.now(),
+          meta: { title: title || tapeId, codex: true, atomic_guide: true }
+        });
+      }
+
+      try {
+        const bc = new BroadcastChannel("ASX_TAPE_SYNC");
+        bc.postMessage({ type: "TAPE_PING", tape: tapeId, ts: Date.now() });
+      } catch {}
+    }
+
+    // --------- Load codex
+
+    async function fetchText(path) {
+      const res = await fetch(path, { cache: "no-store" });
+      if (!res.ok) throw new Error("Fetch failed: " + path + " (" + res.status + ")");
+      return await res.text();
+    }
+
+    function normalizeGuide(guide) {
+      // Minimal sanity normalization (projection-only)
+      if (!guide || typeof guide !== "object") throw new Error("Guide is not an object");
+      if (guide["@type"] && guide["@type"] !== "asx.atomic.guide") {
+        // tolerate, but mark degraded
+        document.getElementById("hud-status-text").textContent = "DEGRADED · TYPE MISMATCH";
+      }
+      guide.tapes = Array.isArray(guide.tapes) ? guide.tapes : [];
+      for (const t of guide.tapes) {
+        t.tags = Array.isArray(t.tags) ? t.tags : [];
+        t.sections = Array.isArray(t.sections) ? t.sections : [];
+      }
+      return guide;
+    }
+
+    async function loadGuide() {
+      // Prefer SCXQ2 packed file, fallback to JSON
+      try {
+        bootMsgEl.innerHTML = `Fetching <code>${escapeHtml(PATH_SCXQ2)}</code>…`;
+        const packedText = await fetchText(PATH_SCXQ2);
+        bootMsgEl.innerHTML = `Decoding <code>${escapeHtml(PATH_SCXQ2)}</code>…`;
+        const guide = SCXQ2.unpack(packedText);
+        return normalizeGuide(guide);
+      } catch (e1) {
+        try {
+          bootMsgEl.innerHTML = `SCXQ2 missing/invalid. Fallback <code>${escapeHtml(PATH_JSON)}</code>…`;
+          const jsonText = await fetchText(PATH_JSON);
+          const guide = JSON.parse(jsonText);
+          return normalizeGuide(guide);
+        } catch (e2) {
+          throw new Error("Failed to load codex. SCXQ2: " + e1.message + " | JSON: " + e2.message);
+        }
+      }
+    }
+
+    // --------- Filtering
+
+    function applyFilter(q) {
+      const guide = STATE.guide;
+      if (!guide) return;
+
+      const query = (q || "").toLowerCase().trim();
+      if (!query) {
+        STATE.filteredTapes = guide.tapes.slice();
+        buildNav(STATE.filteredTapes);
+        return;
+      }
+
+      const filtered = guide.tapes.filter(t => {
+        const hay = [
+          t.id || "",
+          t.label || "",
+          t.subtitle || "",
+          ...(t.tags || [])
+        ].join(" ").toLowerCase();
+        return hay.includes(query);
+      });
+
+      STATE.filteredTapes = filtered;
+      buildNav(filtered);
+    }
+
+    // --------- Boot
+
+    async function boot() {
+      // SW registration is projection-safe
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      }
+
+      try {
+        const guide = await loadGuide();
+        STATE.guide = guide;
+        STATE.filteredTapes = (guide.tapes || []).slice();
+
+        // HUD/meta
+        hudTitleEl.textContent = (guide.meta && guide.meta.title) ? guide.meta.title.toUpperCase() : "ASX ATOMIC MEGA CODEX";
+        hudSubtitleEl.textContent = (guide.meta && guide.meta.subtitle) ? guide.meta.subtitle : "XCFE · XJSON · K’UHUL · AST · ATOMIC · CMS · RLHF";
+        navMetaEl.textContent = "ATOMIC INDEX Ω";
+        renderBadges((guide.meta && guide.meta.badges) ? guide.meta.badges : []);
+
+        // Nav + route
+        buildNav(STATE.filteredTapes);
+        restoreFromHashOrDefault();
+
+        document.getElementById("hud-status-text").textContent = "ONLINE · LOCAL ASXR";
+        activeTapePill.textContent = "TAPE: " + String(STATE.activeTapeId || "READY").toUpperCase();
+
+      } catch (err) {
+        document.getElementById("hud-status-text").textContent = "OFFLINE · BOOT ERROR";
+        document.getElementById("hud-led").classList.remove("on");
+        mainTitleEl.textContent = "BOOT FAILURE";
+        mainSubtitleEl.textContent = err.message || "Failed to boot";
+
+        viewportEl.innerHTML = "";
+        const s = document.createElement("section");
+        s.className = "tape-view active";
+        s.innerHTML = `
+          <div class="loader">
+            <div class="loader-title">ERROR</div>
+            <div class="divider"></div>
+            <div class="loader-sub">${escapeHtml(err.message || String(err))}</div>
+            <div class="loader-sub">Expected: <code>${escapeHtml(PATH_SCXQ2)}</code> or <code>${escapeHtml(PATH_JSON)}</code></div>
+          </div>
+        `;
+        viewportEl.appendChild(s);
+      }
+    }
+
+    navFilterInput.addEventListener("input", () => applyFilter(navFilterInput.value));
+    window.addEventListener("hashchange", () => restoreFromHashOrDefault());
+
+    boot();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+{
+  "@id": "asx://schema/lex.grammar.v1",
+  "@type": "asx.schema.v1",
+  "@schema": "xjson://schema/core/v1",
+  "@status": "FROZEN",
+  "@version": "1.0.0",
+  "@rules": {
+    "deterministic": true,
+    "offline": true,
+    "no_external_schema_urls": true,
+    "no_exec": true,
+    "closed_normalization": true
+  },
+  "@doc": {
+    "name": "LEX Grammar",
+    "purpose": "Define a grammar + normalization rules that MX2LEX can compile into a legality oracle (finite automaton) deterministically."
+  },
+  "required": [
+    "@type",
+    "@meta",
+    "tokens",
+    "nonterminals",
+    "start",
+    "productions",
+    "constraints"
+  ],
+  "properties": {
+    "@type": { "const": "lex.grammar.v1" },
+    "@meta": {
+      "type": "object",
+      "required": ["id", "lang", "semver", "canon"],
+      "properties": {
+        "id": { "type": "string", "description": "Grammar identifier" },
+        "lang": { "type": "string", "description": "Target language name (e.g., GGL, KUHUL-ES, etc.)" },
+        "semver": { "type": "string", "description": "Grammar semantic version" },
+        "canon": {
+          "type": "object",
+          "required": ["ordering", "case", "unicode_nf"],
+          "properties": {
+            "ordering": { "const": "lexicographic_keys" },
+            "case": { "enum": ["preserve", "lower", "upper"] },
+            "unicode_nf": { "enum": ["NFC", "NFKC"] }
+          }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "tokens": {
+      "type": "array",
+      "description": "Terminal tokens. IDs MUST be unique and stable.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string" },
+          "kind": { "enum": ["literal", "regex", "class", "special"] },
+          "literal": { "type": "string" },
+          "regex": {
+            "type": "string",
+            "description": "Regex *pattern string*; execution environment decides engine; only used for tokenization, not execution."
+          },
+          "class": {
+            "type": "object",
+            "description": "Character class spec (engine-agnostic).",
+            "properties": {
+              "ranges": { "type": "array", "items": { "type": "array" } },
+              "chars": { "type": "string" }
+            }
+          },
+          "flags": {
+            "type": "object",
+            "properties": {
+              "skip": { "type": "boolean", "description": "Ignored by parser (e.g., whitespace/comments)" },
+              "eof": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "nonterminals": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Nonterminal symbols (names)."
+    },
+    "start": {
+      "type": "string",
+      "description": "Start nonterminal name."
+    },
+    "productions": {
+      "type": "array",
+      "description": "Production rules. Each rule expands a nonterminal into a sequence of symbols.",
+      "items": {
+        "type": "object",
+        "required": ["id", "lhs", "rhs"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1, "description": "Stable production id" },
+          "lhs": { "type": "string" },
+          "rhs": {
+            "type": "array",
+            "description": "Sequence of symbols: {t: 'T', v: tokenId} or {t:'N', v: nonterminalName}",
+            "items": {
+              "type": "object",
+              "required": ["t", "v"],
+              "properties": {
+                "t": { "enum": ["T", "N"] },
+                "v": { "type": ["integer", "string"] }
+              }
+            }
+          },
+          "prec": { "type": "integer", "description": "Optional precedence (higher wins)" },
+          "assoc": { "enum": ["left", "right", "none"], "description": "Optional associativity" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Hard legality constraints applied during parse/validation.",
+      "required": ["limits", "ban"],
+      "properties": {
+        "limits": {
+          "type": "object",
+          "required": ["max_tokens", "max_depth", "max_nodes"],
+          "properties": {
+            "max_tokens": { "type": "integer", "minimum": 1 },
+            "max_depth": { "type": "integer", "minimum": 1 },
+            "max_nodes": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "ban": {
+          "type": "array",
+          "description": "Banned patterns at grammar level (symbol sequences).",
+          "items": {
+            "type": "object",
+            "required": ["id", "reason", "seq"],
+            "properties": {
+              "id": { "type": "string" },
+              "reason": { "type": "string" },
+              "seq": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["t", "v"],
+                  "properties": {
+                    "t": { "enum": ["T", "N"] },
+                    "v": { "type": ["integer", "string"] }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "require": {
+          "type": "array",
+          "description": "Required tokens/nonterminals that must appear at least once (optional).",
+          "items": {
+            "type": "object",
+            "required": ["t", "v"],
+            "properties": { "t": { "enum": ["T", "N"] }, "v": { "type": ["integer", "string"] } }
+          }
+        }
+      }
+    },
+    "normalization": {
+      "type": "object",
+      "description": "Deterministic normalization rules applied before tokenization/parsing.",
+      "properties": {
+        "trim": { "type": "boolean" },
+        "collapse_ws": { "type": "boolean" },
+        "newline": { "enum": ["lf", "crlf", "preserve"] },
+        "tab_width": { "type": "integer", "minimum": 1 },
+        "replace": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

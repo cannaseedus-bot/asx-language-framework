@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "truncation": null,
+  "padding": null,
+  "added_tokens": [
+    {
+      "id": 2,
+      "content": "<|pad|>",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    }
+  ],
+  "normalizer": {
+    "type": "NFKC"
+  },
+  "pre_tokenizer": {
+    "type": "ByteLevel",
+    "add_prefix_space": true
+  },
+  "post_processor": {
+    "type": "TemplateProcessing",
+    "single": [
+      {"SpecialToken": {"id": "<|endoftext|>", "type_id": 0}},
+      {"Sequence": {"id": "<|text|>", "type_id": 0}},
+      {"SpecialToken": {"id": "<|endoftext|>", "type_id": 0}}
+    ],
+    "special_tokens": [
+      {"id": "<|endoftext|>", "ids": [0], "tokens": ["<|endoftext|>"]},
+      {"id": "<|pad|>", "ids": [2], "tokens": ["<|pad|>"]}
+    ]
+  },
+  "decoder": {
+    "type": "ByteLevel"
+  },
+  "model": {
+    "type": "BPE",
+    "vocab": {
+      "<|endoftext|>": 0,
+      "<|unk|>": 1,
+      "<|pad|>": 2,
+      "h": 3,
+      "e": 4,
+      "l": 5,
+      "o": 6,
+      "w": 7,
+      "r": 8,
+      "d": 9,
+      " ": 10,
+      "!": 11
+    },
+    "merges": [
+      ["h", "e"],
+      ["l", "l"],
+      ["he", "ll"],
+      ["hell", "o"],
+      ["w", "or"],
+      ["wo", "rld"]
+    ]
+  }
+}
