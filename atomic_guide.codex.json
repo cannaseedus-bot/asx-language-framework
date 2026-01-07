@@ -1,0 +1,94 @@
+{
+  "@id": "asx://codex/atomic_guide.v1",
+  "@type": "asx.atomic.guide",
+  "@version": "1.0.0-omega",
+  "@law": {
+    "authority": "ASX-R",
+    "rule": "projection_only_no_execution"
+  },
+  "meta": {
+    "title": "ASX ATOMIC MEGA CODEX — Hazard Ω Edition",
+    "subtitle": "XCFE · XJSON · K’UHUL · AST · ATOMIC · CMS · RLHF",
+    "mode": ["offline-first", "local-only"],
+    "badges": [
+      { "label": "HAZARD · ATOMIC Ω", "kind": "hazard" },
+      { "label": "LOCAL-ONLY · OFFLINE-FIRST", "kind": "mode" }
+    ]
+  },
+  "tapes": [
+    {
+      "id": "xjson-prime",
+      "label": "XJSON PRIME",
+      "subtitle": "Language · XCFE · /xjson/run mesh",
+      "tags": ["xjson", "language", "xcfe", "server"],
+      "sections": [
+        {
+          "type": "card",
+          "title": "XJSON as OS Law",
+          "content": [
+            {
+              "type": "text",
+              "value": "XJSON is the single OS language: apps, agents, CMS entries, tapes, HIVE maps, and backend routes are all defined as structured JSON with XCFE control-flow."
+            },
+            {
+              "type": "code",
+              "language": "json",
+              "value": {
+                "$schema": "xjson://v1/app",
+                "@law": "ASX = XCFE = XJSON = KUHUL = AST",
+                "meta": {
+                  "id": "atomic_codex",
+                  "title": "ASX Atomic Mega Codex",
+                  "version": "1.0.0-omega"
+                },
+                "routes": {
+                  "/codex": { "@view": "codex.index" },
+                  "/cms": { "@view": "cms.dashboard" }
+                }
+              }
+            },
+            {
+              "type": "note",
+              "kind": "info",
+              "value": "Every other tape in this guide is just XJSON views plus K’UHUL execution."
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "title": "/xjson/run Mesh",
+          "content": [
+            {
+              "type": "code",
+              "language": "js",
+              "value": "async function xjsonRun(baseUrl, program, context = {}) { /* fetch + POST */ }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "atomic-html",
+      "label": "ATOMIC HTML",
+      "subtitle": "Blocks · Layout · Ghost UI",
+      "tags": ["atomic", "html", "css", "ui"],
+      "sections": [
+        {
+          "type": "card",
+          "title": "Atomic Layout Blocks",
+          "content": [
+            {
+              "type": "text",
+              "value": "Atomic HTML replaces frameworks with a tiny vocabulary: row, col, grid, card, chip."
+            },
+            {
+              "type": "code",
+              "language": "html",
+              "value": "<div class=\"grid-2\"><article class=\"card\"></article></div>"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

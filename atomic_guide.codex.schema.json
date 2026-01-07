@@ -1,0 +1,99 @@
+{
+  "$schema": "xjson://schema/core/v1",
+  "@id": "asx://schema/atomic_guide.codex.v1",
+  "@type": "schema",
+  "@status": "frozen",
+  "@authority": "ASX-R",
+  "description": "Schema for the Atomic Guide Codex. Defines a projection-only, non-executable, renderable guide composed of tapes, sections, and content blocks. HTML/CSS/DOM are projections only.",
+  "type": "object",
+  "required": ["@id", "@type", "@version", "@law", "meta", "tapes"],
+  "properties": {
+    "@id": { "type": "string" },
+    "@type": { "const": "asx.atomic.guide" },
+    "@version": { "type": "string" },
+    "@law": {
+      "type": "object",
+      "required": ["authority", "rule"],
+      "properties": {
+        "authority": { "const": "ASX-R" },
+        "rule": {
+          "const": "projection_only_no_execution"
+        }
+      },
+      "additionalProperties": false
+    },
+    "meta": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "mode": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label"],
+            "properties": {
+              "label": { "type": "string" },
+              "kind": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "tapes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "sections"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "subtitle": { "type": "string" },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "title", "content"],
+              "properties": {
+                "type": {
+                  "enum": ["card", "panel", "grid"]
+                },
+                "title": { "type": "string" },
+                "content": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["type"],
+                    "properties": {
+                      "type": {
+                        "enum": ["text", "code", "note", "pill_row", "list"]
+                      },
+                      "value": {},
+                      "language": { "type": "string" },
+                      "kind": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
