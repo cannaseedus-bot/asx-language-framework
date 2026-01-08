@@ -1,0 +1,1 @@
+"""GGL legality oracle package."""
