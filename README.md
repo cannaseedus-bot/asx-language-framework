@@ -76,5 +76,11 @@ npm install @asx/tape-runtime
 npm install @asx/scxq2-engine
 npm install @asx/klh-orchestrator
 npm install @asx/asx-blocks-core
+```
 
+---
 
+# 📚 Documentation
+
+- [Getting Started](documentation/getting-started.md)
+- [Integrating PHP with Python](documentation/php-python-integration.md)
