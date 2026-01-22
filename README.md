@@ -84,3 +84,22 @@ npm install @asx/asx-blocks-core
 
 - [Getting Started](documentation/getting-started.md)
 - [Integrating PHP with Python](documentation/php-python-integration.md)
+
+---
+
+# 🧰 Tooling & Fixtures
+
+### **ASX ESLint Rules**
+The repo includes an ESLint plugin with additional ASX envelope checks, including:
+
+- Hash-bound import enforcement (`import-hash-bound`)
+- Transitive import authority scanning (`forbidden-transitive-imports`)
+- Flow-sensitive effect propagation (`effects-flow`)
+
+See `asx-ts-compare/tools/eslint-plugin-asx` for implementation and the recommended config export. 
+
+### **VSCode Diagnostics**
+There is a lightweight VSCode extension under `tools/vscode-asx` that provides inline diagnostics for missing envelopes and common effect/capability violations.
+
+### **Golden Vectors & MX2LEX Instances**
+Deterministic test vectors live in `tests/golden`, and MX2LEX instance artifacts live under `codex/lex` and `codex/mx2lex`. These are intended for lint ↔ verifier parity checks and oracle regression testing.
