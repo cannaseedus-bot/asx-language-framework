@@ -1,0 +1,108 @@
+{
+  "@id": "asx://schema/mx2lex.weights.bind.v1",
+  "@type": "asx.schema.v1",
+  "@schema": "xjson://schema/core/v1",
+  "@status": "FROZEN",
+  "@version": "1.0.0",
+  "@rules": {
+    "no_exec": true,
+    "deterministic": true,
+    "append_only_minor": true,
+    "hash_anchored": true,
+    "bounded": true
+  },
+  "@doc": {
+    "name": "MX2LEX Weight Bias Binding",
+    "purpose": "Map lex symbols/classes into stable bias channels used by training/inference (logit bias, constraint bias, structural reward) without changing model weights here."
+  },
+  "required": ["@type", "@meta", "bind", "channels", "hashes"],
+  "properties": {
+    "@type": { "const": "mx2lex.weights.bind.v1" },
+    "@meta": {
+      "type": "object",
+      "required": ["id", "semver", "pack_ref", "pack_hash", "canon"],
+      "properties": {
+        "id": { "type": "string" },
+        "semver": { "type": "string" },
+        "pack_ref": { "type": "string" },
+        "pack_hash": { "type": "string", "description": "sha256:<hex> of mx2lex.pack canonical form" },
+        "canon": {
+          "type": "object",
+          "required": ["ordering"],
+          "properties": { "ordering": { "const": "lexicographic_keys" } }
+        }
+      }
+    },
+    "channels": {
+      "type": "array",
+      "description": "Stable channel definitions. IDs are immutable.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "mode", "range"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string" },
+          "mode": { "enum": ["logit_bias", "reward", "penalty", "mask"] },
+          "range": {
+            "type": "object",
+            "required": ["min", "max"],
+            "properties": { "min": { "type": "number" }, "max": { "type": "number" } }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "bind": {
+      "type": "array",
+      "description": "Bindings from symbols/classes to channels. Deterministic ordering required.",
+      "items": {
+        "type": "object",
+        "required": ["id", "target", "channel", "value"],
+        "properties": {
+          "id": { "type": "string", "description": "Stable binding id" },
+          "target": {
+            "type": "object",
+            "required": ["kind", "ref"],
+            "properties": {
+              "kind": { "enum": ["token", "token_name", "nonterminal", "production", "class"] },
+              "ref": { "type": ["integer", "string"] },
+              "scope": {
+                "enum": ["global", "prefix", "suffix", "position"],
+                "description": "Optional binding scope"
+              }
+            }
+          },
+          "channel": { "type": "integer", "description": "Channel id" },
+          "value": { "type": "number", "description": "Value applied within channel range" },
+          "when": {
+            "type": "object",
+            "description": "Optional gating conditions (bounded).",
+            "properties": {
+              "only_if_legal": { "type": "boolean" },
+              "only_if_illegal": { "type": "boolean" },
+              "dfa_state": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "required": ["bind_self", "channels_hash", "bind_hash"],
+      "properties": {
+        "bind_self": { "type": "string", "description": "sha256:SELF (computed by verifier)" },
+        "channels_hash": { "type": "string" },
+        "bind_hash": { "type": "string" }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "description": "Hard caps to prevent runaway bindings.",
+      "properties": {
+        "max_channels": { "type": "integer", "minimum": 1 },
+        "max_bindings": { "type": "integer", "minimum": 1 },
+        "max_abs_value": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
