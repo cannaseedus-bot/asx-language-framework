@@ -1,0 +1,13 @@
+{
+  "name": "tree-sitter-matrix",
+  "version": "0.1.0",
+  "private": true,
+  "main": "grammar.js",
+  "dependencies": {
+    "tree-sitter-cli": "^0.22.6"
+  },
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test"
+  }
+}
