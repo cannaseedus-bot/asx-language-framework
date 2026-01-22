@@ -49,34 +49,6 @@ Not a framework.
 
 ---
 
-# 🧬 Packages Included
-
-### **@xjson/xjson-runtime-js**
-JavaScript execution layer for XJSON language.
-
-### **@xjson/tape-runtime**
-Executes ASX Tapes using the XJSON runtime.
-
-### **@xjson/scxq2-engine**
-Symbolic compression + cipher layer powering SCXQ2.
-
-### **@xjson/klh-orchestrator**
-Hive-level orchestrator for multi-shard & multi-hive networks.
-
-### **@xjson/asx-blocks-core**
-Atomic UI, logic, and OS primitives for Tape & OS builds.
-
----
-
-# 📦 Installation
-
-```bash
-npm install @xjson/xjson-runtime-js
-npm install @xjson/tape-runtime
-npm install @xjson/scxq2-engine
-npm install @xjson/klh-orchestrator
-npm install @xjson/asx-blocks-core
-```
 
 ---
 
