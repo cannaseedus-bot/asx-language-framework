@@ -1,0 +1,131 @@
+{
+  "$schema": "xjson://schema/core/v1",
+  "id": "kuhul://schema/class/micronaut/v1",
+  "title": "Micronaut Class Schema (v1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "id", "version", "meta", "lifecycle", "capabilities", "invariants"],
+  "properties": {
+    "kind": { "type": "string", "const": "micronaut.class" },
+    "id": {
+      "type": "string",
+      "pattern": "^asx://class/micronaut/[a-z0-9._-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "domain", "authority"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "domain": { "type": "string", "enum": ["agent", "micronaut"] },
+        "authority": { "type": "string", "const": "bounded" },
+        "description": { "type": "string", "maxLength": 2048 },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "maxItems": 64,
+          "uniqueItems": true
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "initial", "terminal", "transitions"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z_]{2,32}$" }
+        },
+        "initial": { "type": "string", "pattern": "^[A-Z_]{2,32}$" },
+        "terminal": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z_]{2,32}$" }
+        },
+        "transitions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to", "on"],
+            "properties": {
+              "from": { "type": "string", "pattern": "^[A-Z_]{2,32}$" },
+              "to": { "type": "string", "pattern": "^[A-Z_]{2,32}$" },
+              "on": { "type": "string", "minLength": 1, "maxLength": 128 },
+              "guard": { "type": "string", "maxLength": 256 },
+              "effect": { "type": "string", "maxLength": 256 }
+            }
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["io", "network", "process", "storage"],
+      "properties": {
+        "io": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["read", "write"],
+          "properties": {
+            "read": { "type": "boolean", "const": false },
+            "write": { "type": "boolean", "const": false }
+          }
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["outbound", "inbound"],
+          "properties": {
+            "outbound": { "type": "boolean", "const": false },
+            "inbound": { "type": "boolean", "const": false }
+          }
+        },
+        "process": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["spawn"],
+          "properties": {
+            "spawn": { "type": "boolean", "const": false }
+          }
+        },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["persistent"],
+          "properties": {
+            "persistent": { "type": "boolean", "default": false }
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 512,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule", "level"],
+        "properties": {
+          "rule": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "level": { "type": "string", "enum": ["must", "should", "may"] },
+          "path": { "type": "string", "maxLength": 512 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Atomic Guide · Class Browser</title>
+  <style>
+    :root{
+      --bg:#020617;--bg2:#061125;--fg:#e6fffa;--mut:#7dd3fc;--ac:#16f2aa;
+      --b:rgba(125,211,252,.18);--r:14px;--s1:8px;--s2:12px;--s3:16px;--s4:24px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    body{margin:0;background:radial-gradient(1200px 800px at 20% 10%, rgba(22,242,170,.12), transparent 60%),var(--bg);color:var(--fg);}
+    .wrap{display:grid;grid-template-columns: 420px 1fr;gap:var(--s3);padding:var(--s3);height:100vh;box-sizing:border-box;}
+    .card{background:linear-gradient(180deg, rgba(6,17,37,.72), rgba(2,6,23,.82));border:1px solid var(--b);border-radius:var(--r);box-shadow:0 18px 60px rgba(0,0,0,.35);}
+    .left{display:grid;grid-template-rows:auto auto 1fr;overflow:hidden;}
+    .head{padding:var(--s3);border-bottom:1px solid var(--b);}
+    .title{font-weight:800;letter-spacing:.4px}
+    .sub{color:var(--mut);font-size:13px;margin-top:4px}
+    .controls{display:grid;grid-template-columns:1fr 140px;gap:var(--s2);padding:var(--s3);border-bottom:1px solid var(--b);}
+    input,select{background:rgba(2,6,23,.7);color:var(--fg);border:1px solid var(--b);border-radius:12px;padding:10px 12px;outline:none}
+    .list{overflow:auto;padding:var(--s2)}
+    .row{padding:12px;border:1px solid rgba(125,211,252,.12);border-radius:12px;margin-bottom:10px;cursor:pointer}
+    .row:hover{border-color:rgba(22,242,170,.35)}
+    .row.disabled{cursor:not-allowed;opacity:0.6}
+    .k{color:var(--ac);font-size:12px}
+    .n{font-weight:700;margin-top:4px}
+    .m{color:var(--mut);font-size:12px;margin-top:2px}
+    .right{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+    .detailHead{display:flex;justify-content:space-between;align-items:center;padding:var(--s3);border-bottom:1px solid var(--b);}
+    button{background:rgba(22,242,170,.16);color:var(--fg);border:1px solid rgba(22,242,170,.35);border-radius:12px;padding:10px 12px;cursor:pointer}
+    button:hover{background:rgba(22,242,170,.22)}
+    button:disabled{opacity:0.5;cursor:not-allowed}
+    pre{margin:0;padding:var(--s3);overflow:auto;white-space:pre;tab-size:2;}
+    .pill{display:inline-block;padding:6px 10px;border:1px solid var(--b);border-radius:999px;color:var(--mut);font-size:12px;margin-left:10px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card left">
+      <div class="head">
+        <div class="title">Atomic Guide · Class Browser</div>
+        <div class="sub">Index-driven viewer (MX2LEX JSONL). Click a class to inspect the instance JSON.</div>
+      </div>
+      <div class="controls">
+        <input id="q" placeholder="Search id / name / kind..." />
+        <select id="kind">
+          <option value="">All kinds</option>
+          <option value="atomic.class">atomic.class</option>
+          <option value="micronaut.class">micronaut.class</option>
+          <option value="engine.class">engine.class</option>
+          <option value="control.class">control.class</option>
+          <option value="schema.class">schema.class</option>
+          <option value="projection.class">projection.class</option>
+        </select>
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+
+    <div class="card right">
+      <div class="detailHead">
+        <div>
+          <span id="dTitle" class="title">No selection</span>
+          <span id="dPill" class="pill" style="display:none;"></span>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button id="copy" disabled>Copy JSON</button>
+        </div>
+      </div>
+      <pre id="detail">{}</pre>
+    </div>
+  </div>
+
+<script>
+(async function(){
+  const INDEX_URL = "/codex/mx2lex/classes.index.jsonl";
+  const listEl = document.getElementById("list");
+  const qEl = document.getElementById("q");
+  const kindEl = document.getElementById("kind");
+  const detailEl = document.getElementById("detail");
+  const dTitle = document.getElementById("dTitle");
+  const dPill = document.getElementById("dPill");
+  const copyBtn = document.getElementById("copy");
+
+  let rows = [];
+  let currentJson = null;
+
+  function parseJSONL(text){
+    return text.split("\n").filter(Boolean).map(line => {
+      try { return JSON.parse(line); } catch (e) { return null; }
+    }).filter(Boolean);
+  }
+
+  function renderList(){
+    const q = (qEl.value||"").trim().toLowerCase();
+    const k = kindEl.value;
+
+    const filtered = rows.filter(r => {
+      if (k && r.kind !== k) return false;
+      if (!q) return true;
+      return (
+        (r.id||"").toLowerCase().includes(q) ||
+        (r.name||"").toLowerCase().includes(q) ||
+        (r.kind||"").toLowerCase().includes(q)
+      );
+    });
+
+    listEl.innerHTML = filtered.map(r => {
+      const hasInstance = Boolean(r.instance_path);
+      const disabled = hasInstance ? "" : "disabled";
+      return `
+      <div class="row ${disabled}" data-hash="${r.hash || ""}" data-path="${r.instance_path || ""}" data-name="${r.name || r.id}">
+        <div class="k">${r.kind || "class"}</div>
+        <div class="n">${r.name || r.id}</div>
+        <div class="m">${r.id || ""}</div>
+      </div>
+      `;
+    }).join("");
+
+    listEl.querySelectorAll(".row").forEach(el => {
+      if (el.dataset.path) {
+        el.addEventListener("click", () => loadDetail(el.dataset.path, el.dataset.hash));
+      }
+    });
+  }
+
+  async function loadDetail(path, hash){
+    const res = await fetch(path, { cache: "no-store" });
+    const text = await res.text();
+    try {
+      currentJson = JSON.parse(text);
+    } catch (e) {
+      currentJson = { error: "Invalid JSON", raw: text };
+    }
+
+    dTitle.textContent = currentJson?.meta?.name || currentJson?.id || "Class";
+    dPill.style.display = "inline-block";
+    dPill.textContent = (currentJson.kind || "class") + " · " + (currentJson.version || "v?") + " · " + (hash || "");
+    detailEl.textContent = JSON.stringify(currentJson, null, 2);
+    copyBtn.disabled = false;
+  }
+
+  copyBtn.addEventListener("click", async () => {
+    if (!currentJson) return;
+    await navigator.clipboard.writeText(JSON.stringify(currentJson, null, 2));
+  });
+
+  qEl.addEventListener("input", renderList);
+  kindEl.addEventListener("change", renderList);
+
+  const txt = await (await fetch(INDEX_URL, { cache: "no-store" })).text();
+  rows = parseJSONL(txt).sort((a,b) => (a.id||"").localeCompare(b.id||""));
+  renderList();
+})();
+</script>
+</body>
+</html>
