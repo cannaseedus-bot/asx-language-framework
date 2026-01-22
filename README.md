@@ -70,8 +70,20 @@ The repo includes an ESLint plugin with additional ASX envelope checks, includin
 
 See `asx-ts-compare/tools/eslint-plugin-asx` for implementation and the recommended config export. 
 
-### **VSCode Diagnostics**
-There is a lightweight VSCode extension under `tools/vscode-asx` that provides inline diagnostics for missing envelopes and common effect/capability violations.
+- [Getting Started](documentation/getting-started.md)
+- [Integrating PHP with Python](documentation/php-python-integration.md)
+- [ASX Class Cross-Mapping](documentation/asx_class_cross_mapping.md)
+- [ASX Authority Requirements](documentation/asx_authority_requirements.md)
+- [ASX Authority Parametrics](documentation/asx_authority_parametrics.md)
 
-### **Golden Vectors & MX2LEX Instances**
-Deterministic test vectors live in `tests/golden`, and MX2LEX instance artifacts live under `codex/lex` and `codex/mx2lex`. These are intended for lint ↔ verifier parity checks and oracle regression testing.
+---
+
+# 🧩 ASX Class Tooling
+
+- Class schemas: `codex/class/*.class.schema.xjson`
+- MX2LEX class index: `codex/mx2lex/classes.index.jsonl`
+- Tree-sitter grammar + queries: `grammar/tree-sitter-asx-class/`
+- DSL transpiler: `tools/class_transpile.mjs`
+- MX2LEX diff tool: `tools/mx2lex_diff.mjs`
+- SCXQ2 packers: `scxq2/class_pack.js`, `scxq2/scxq2b1.rs`
+- Rust legality verifier: `verifiers/asx_class_legality_verifier_rs`
