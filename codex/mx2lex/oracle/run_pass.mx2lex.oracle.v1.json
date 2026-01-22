@@ -1,0 +1,25 @@
+{
+  "@id": "mx2lex.oracle.v1",
+  "@run": "PASS",
+  "@input": {
+    "@source": "snippet.ggl",
+    "@text": "Wo entropy = 0.32\nSek perceive -> decide -> act\nPop fetch: \"https://example.com/data.json\""
+  },
+  "@using": {
+    "@grammar": "lex.grammar.v1",
+    "@pack": "mx2lex.pack.v1"
+  },
+  "@result": {
+    "@parse": "OK",
+    "@tokens": 18,
+    "@ast_nodes": 9,
+    "@effects_observed": ["net.read"],
+    "@effects_declared": ["net.read"],
+    "@authority": {
+      "@caps_required": [],
+      "@caps_forbidden_hit": []
+    }
+  },
+  "@verdict": "PASS",
+  "@hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+}

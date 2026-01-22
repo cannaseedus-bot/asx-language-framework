@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 export type AsxEnvelope = {
+  "@meta"?: { version?: string; hash?: string };
   "@effects"?: {
     net?: string[];
     dom?: string[];
@@ -9,6 +10,20 @@ export type AsxEnvelope = {
     time?: string[];
     random?: string[];
     pure?: string[];
+  };
+  "@imports"?: {
+    allow?: Array<{
+      spec: string;
+      hash?: string;
+      kind?: "npm" | "local" | "url";
+      effects?: Partial<NonNullable<AsxEnvelope["@effects"]>>;
+    }>;
+    deny?: Array<{ spec: string; mode?: "exact" | "prefix" }>;
+    transitive?: {
+      deny_effects?: Array<keyof NonNullable<AsxEnvelope["@effects"]>>;
+      deny_caps?: string[];
+      max_depth?: number;
+    };
   };
   "@capabilities"?: {
     forbids?: string[];
@@ -37,4 +52,19 @@ export function effectDeclared(
 
 export function isForbidden(env: AsxEnvelope, atom: string): boolean {
   return env["@capabilities"]?.forbids?.includes(atom) ?? false;
+}
+
+export function findImportRule(env: AsxEnvelope, spec: string) {
+  const rules = env["@imports"]?.allow ?? [];
+  return rules.find((r) => r.spec === spec) ?? null;
+}
+
+export function isImportDenied(env: AsxEnvelope, spec: string): boolean {
+  const deny = env["@imports"]?.deny ?? [];
+  for (const r of deny) {
+    const mode = r.mode ?? "exact";
+    if (mode === "exact" && r.spec === spec) return true;
+    if (mode === "prefix" && spec.startsWith(r.spec)) return true;
+  }
+  return false;
 }
