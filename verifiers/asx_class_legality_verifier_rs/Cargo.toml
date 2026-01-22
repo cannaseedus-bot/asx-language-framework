@@ -1,0 +1,10 @@
+[package]
+name = "asx_class_legality_verifier"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.10"
