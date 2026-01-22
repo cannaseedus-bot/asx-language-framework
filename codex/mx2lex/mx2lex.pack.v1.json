@@ -1,0 +1,72 @@
+{
+  "@id": "mx2lex.pack.v1",
+  "@source": "lex.grammar.v1",
+  "@version": "1.0.0",
+  "@tables": {
+    "token_ids": {
+      "KW:Wo": 1,
+      "KW:Sek": 2,
+      "KW:Pop": 3,
+      "SYM:=": 4,
+      "SYM:->": 5,
+      "SYM:.": 6,
+      "SYM::": 7,
+      "ID": 8,
+      "NUM": 9,
+      "STR": 10
+    },
+    "nonterm_ids": {
+      "program": 1,
+      "stmt": 2,
+      "wo_stmt": 3,
+      "sek_stmt": 4,
+      "arrow_tail": 5,
+      "pop_stmt": 6,
+      "path": 7,
+      "path_tail": 8,
+      "value": 9,
+      "id": 10,
+      "num": 11,
+      "str": 12
+    },
+    "productions": [
+      { "lhs": 1, "rhs": [2], "rep": "program -> stmt*" },
+
+      { "lhs": 2, "rhs": [3], "rep": "stmt -> wo_stmt" },
+      { "lhs": 2, "rhs": [4], "rep": "stmt -> sek_stmt" },
+      { "lhs": 2, "rhs": [6], "rep": "stmt -> pop_stmt" },
+
+      { "lhs": 3, "rhs": [1, 7, 4, 9], "rep": "wo_stmt -> Wo path = value" },
+      { "lhs": 4, "rhs": [2, 10, 5, 10, 5], "rep": "sek_stmt -> Sek id -> id arrow_tail?" },
+      { "lhs": 5, "rhs": [5, 10, 5], "rep": "arrow_tail -> -> id arrow_tail?" },
+      { "lhs": 6, "rhs": [3, 7, 7, 9], "rep": "pop_stmt -> Pop path : value" },
+
+      { "lhs": 7, "rhs": [10, 8], "rep": "path -> id path_tail*" },
+      { "lhs": 8, "rhs": [6, 10], "rep": "path_tail -> . id" },
+
+      { "lhs": 9, "rhs": [11], "rep": "value -> num" },
+      { "lhs": 9, "rhs": [12], "rep": "value -> str" },
+      { "lhs": 9, "rhs": [10], "rep": "value -> id" },
+
+      { "lhs": 10, "rhs": [8], "rep": "id -> ID" },
+      { "lhs": 11, "rhs": [9], "rep": "num -> NUM" },
+      { "lhs": 12, "rhs": [10], "rep": "str -> STR" }
+    ],
+    "first_sets": {
+      "stmt": ["KW:Wo", "KW:Sek", "KW:Pop"],
+      "wo_stmt": ["KW:Wo"],
+      "sek_stmt": ["KW:Sek"],
+      "pop_stmt": ["KW:Pop"]
+    }
+  },
+  "@determinism": {
+    "order": "lexicographic(lhs, rhs, rep)",
+    "hash_inputs": [
+      "@tables.token_ids",
+      "@tables.nonterm_ids",
+      "@tables.productions",
+      "@tables.first_sets"
+    ]
+  },
+  "@hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+}

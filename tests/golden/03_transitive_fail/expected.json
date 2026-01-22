@@ -1,0 +1,6 @@
+{
+  "result": "FAIL",
+  "violations": [
+    { "kind": "transitive.forbidden", "domain": "net", "evidence": "./b.ts uses fetch" }
+  ]
+}
