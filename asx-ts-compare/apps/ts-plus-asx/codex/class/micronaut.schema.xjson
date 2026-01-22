@@ -1,0 +1,20 @@
+{
+  "@id": "asx://codex/class/micronaut.schema.xjson",
+  "@kind": "asx.class.schema.v1",
+  "@name": "micronaut",
+  "@version": "1.0.0",
+  "@properties": {
+    "@class": { "type": "string", "const": "micronaut" },
+    "@lifecycle": {
+      "type": "string",
+      "enum": ["REGISTERED", "VALIDATED", "BOUND", "ACTIVE", "EXECUTED", "OBSERVED", "ARCHIVED"]
+    },
+    "@caps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "@required": ["@class", "@lifecycle"],
+  "@additionalProperties": false
+}

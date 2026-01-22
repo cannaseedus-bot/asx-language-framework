@@ -1,0 +1,35 @@
+@@matrix.codex
+  @id: "asx://codex/master.v1"
+  @authority: "ASX-R"
+  @execution: "none"
+
+  @schemas
+    @language
+      asx:        {{ asx.schema.xjson }}
+      asx_r:      {{ asx-r.schema.xjson }}
+      xcfe:       {{ xcfe.schema.xjson }}
+      xjson:      {{ xjson.schema.xjson }}
+      kuhul:      {{ kuhul.schema.xjson }}
+      ars:        {{ ars.schema.xjson }}
+
+    @engines
+      pi:         {{ kuhul-pi.schema.xjson }}
+      compression:{{ cc-scx.schema.xjson }}
+      geometry:   {{ geometry.schema.xjson }}
+      metrics:    {{ mfa1.schema.xjson }}
+      temporal:   {{ temporal.schema.xjson }}
+      glyph:      {{ glyph.schema.xjson }}
+
+    @persistence
+      idb_kql:    {{ idb-kql.schema.xjson }}
+      mx2db:      {{ mx2db.schema.xjson }}
+      asx_ram:    {{ asx-ram.schema.xjson }}
+      ledger:     {{ replay-ledger.schema.xjson }}
+      tape:       {{ tape.schema.xjson }}
+
+    @projection
+      atomic_css: {{ atomic-css.schema.xjson }}
+      atomic_xj:  {{ atomic-xjson.schema.xjson }}
+      ggl:        {{ ggl.schema.xjson }}
+      svg3d:      {{ svg3d.schema.xjson }}
+      dom_mask:   {{ dom-mask.schema.xjson }}

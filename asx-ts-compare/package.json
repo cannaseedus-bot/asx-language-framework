@@ -1,0 +1,23 @@
+{
+  "name": "asx-ts-compare",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "tools/*"
+  ],
+  "scripts": {
+    "build": "npm run -ws build",
+    "plain": "node apps/plain-ts/dist/main.js",
+    "asx": "node apps/ts-plus-asx/dist/main.js",
+
+    "gen:asx": "node tools/asx-envelope-gen/dist/index.js apps/ts-plus-asx/src/main.ts apps/ts-plus-asx/src/ui.ts apps/ts-plus-asx/src/api.ts",
+    "verify:asx": "node tools/asx-verifier/dist/index.js apps/ts-plus-asx/src/main.ts && node tools/asx-verifier/dist/index.js apps/ts-plus-asx/src/ui.ts && node tools/asx-verifier/dist/index.js apps/ts-plus-asx/src/api.ts",
+
+    "mx2lex:rebuild": "node tools/mx2lex-index-gen/dist/index.js apps/ts-plus-asx/codex/class apps/ts-plus-asx/mx2lex/classes.index.jsonl"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
