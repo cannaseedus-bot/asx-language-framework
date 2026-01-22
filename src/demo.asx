@@ -1,0 +1,14 @@
+{
+  "@meta": { "version": "asx.envelope.v1", "hash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" },
+  "@effects": { "pure": ["compute"] },
+  "@imports": {
+    "allow": [
+      {
+        "spec": "left-pad",
+        "kind": "npm",
+        "hash": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      }
+    ]
+  },
+  "@capabilities": { "forbids": ["eval", "Function"] }
+}
