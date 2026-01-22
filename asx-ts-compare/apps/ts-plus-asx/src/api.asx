@@ -1,0 +1,28 @@
+{
+  "@capabilities": {
+    "forbids": ["fs.write", "net.open", "eval", "Function"],
+    "requires": []
+  },
+  "@determinism": { "allowed_nondet": [], "mode": "deterministic" },
+  "@effects": { "dom": [], "fs": [], "io": [], "net": ["read"], "pure": [], "random": ["maybe"], "time": [] },
+  "@exports": [{ "kind": "function", "name": "fetchUser" }],
+  "@id": "asx://module/api",
+  "@imports": [],
+  "@kind": "asx.envelope.esm.v1",
+  "@prove": {
+    "constraints": [
+      { "rule": "no_authority_leakage", "severity": "error" },
+      { "rule": "import_hash_bound", "severity": "warn" }
+    ],
+    "verifier": "asx-class-legal.v1"
+  },
+  "@schema": {
+    "includes": ["./codex/class/atomic.schema.xjson", "./codex/class/micronaut.schema.xjson"]
+  },
+  "@target": {
+    "hash": { "algo": "sha256", "value": "RUN_GEN_TO_FILL" },
+    "module_kind": "esm",
+    "path": "./api.ts"
+  },
+  "@version": "1.0.0"
+}

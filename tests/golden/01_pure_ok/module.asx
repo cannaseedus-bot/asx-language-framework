@@ -1,0 +1,6 @@
+{
+  "@meta": { "version": "asx.envelope.v1", "hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "@effects": { "pure": ["compute"] },
+  "@capabilities": { "forbids": ["eval", "Function"] },
+  "@imports": { "allow": [], "deny": [] }
+}

@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en" data-theme="emerald-ghost">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Atomic Guide · MATRIX Schema Live Viewer</title>
+  <style>
+    :root {
+      --bg:#050a14; --bg2:#071226; --fg:#e7fff8; --mut:#7ad7ff;
+      --ac:#16f2aa; --ac2:#00f5ff; --hz:#ff6b6b;
+      --r:16px; --s:12px; --s2:18px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+    body { margin:0; background:radial-gradient(1200px 800px at 20% 0%, rgba(22,242,170,.10), transparent 55%),
+                           radial-gradient(1000px 700px at 90% 20%, rgba(0,245,255,.10), transparent 60%),
+                           linear-gradient(180deg, var(--bg), var(--bg2));
+           color:var(--fg); }
+    .wrap { display:grid; grid-template-columns: 360px 1fr 420px; gap:var(--s); padding:var(--s); }
+    .card { background:rgba(7,18,38,.66); border:1px solid rgba(122,215,255,.18);
+            border-radius:var(--r); padding:var(--s2); backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,.35); min-height: 92vh; }
+    .h { font-weight:800; letter-spacing:.3px; margin:0 0 10px; }
+    .sub { color:var(--mut); font-size:13px; margin:0 0 12px; }
+    .row { display:flex; gap:10px; align-items:center; margin:10px 0; flex-wrap:wrap; }
+    .btn { background:linear-gradient(135deg, rgba(22,242,170,.20), rgba(0,245,255,.10));
+           border:1px solid rgba(22,242,170,.35); color:var(--fg);
+           padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:700; }
+    .btn:active { transform: translateY(1px); }
+    .in { width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(122,215,255,.18);
+          background:rgba(0,0,0,.25); color:var(--fg); }
+    pre { white-space:pre-wrap; word-break:break-word; background:rgba(0,0,0,.25);
+          border:1px solid rgba(122,215,255,.12); border-radius:12px; padding:12px; margin:10px 0; }
+    .tag { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+           border:1px solid rgba(122,215,255,.18); background:rgba(0,0,0,.25); font-size:12px; }
+    .ok { border-color: rgba(22,242,170,.40); }
+    .bad { border-color: rgba(255,107,107,.50); }
+    .grid { display:grid; gap:10px; }
+    .node { padding:10px; border-radius:12px; border:1px solid rgba(122,215,255,.18);
+            background:rgba(0,0,0,.20); }
+    .node b { color: var(--ac2); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; }
+    .split { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h2 class="h">Loader</h2>
+      <p class="sub">Paste SCXQ2-ref-1 packed bundle (base64url) or load JSON bundle.</p>
+
+      <div class="row">
+        <button class="btn" id="btnDemo">Load demo</button>
+        <button class="btn" id="btnVerify">Verify</button>
+        <button class="btn" id="btnIndex">Emit MX2LEX JSONL</button>
+      </div>
+
+      <div class="row">
+        <span class="tag mono">Mode: sealed</span>
+        <span class="tag mono" id="statusTag">Status: idle</span>
+      </div>
+
+      <textarea class="in mono" id="packed" rows="10" placeholder="paste packed bundle here..."></textarea>
+
+      <h3 class="h" style="margin-top:14px;">Proof</h3>
+      <pre class="mono" id="proofOut">{}</pre>
+
+      <h3 class="h" style="margin-top:14px;">MX2LEX JSONL</h3>
+      <pre class="mono" id="jsonlOut">(none)</pre>
+    </section>
+
+    <section class="card">
+      <h2 class="h">Sealed Schema Graph</h2>
+      <p class="sub">Includes are links; no text substitution; no authority inheritance.</p>
+      <div id="graph" class="grid"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="h">Doc Inspector</h2>
+      <p class="sub">Select a node to view raw text and extracted includes/exports.</p>
+      <div class="split">
+        <div>
+          <div class="tag mono">Selected</div>
+          <pre class="mono" id="selMeta">(none)</pre>
+        </div>
+        <div>
+          <div class="tag mono">Raw</div>
+          <pre class="mono" id="selRaw">(none)</pre>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    function b64urlDecode(s) {
+      const pad = "=".repeat((4 - (s.length % 4)) % 4);
+      const b64 = (s + pad).replace(/-/g, "+").replace(/_/g, "/");
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+      return bytes;
+    }
+    function b64urlEncode(bytes) {
+      let bin = "";
+      for (const b of bytes) bin += String.fromCharCode(b);
+      const b64 = btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
+      return b64;
+    }
+    function stableSortKeys(obj) {
+      if (Array.isArray(obj)) return obj.map(stableSortKeys);
+      if (obj && typeof obj === "object") {
+        const out = {};
+        for (const k of Object.keys(obj).sort()) out[k] = stableSortKeys(obj[k]);
+        return out;
+      }
+      return obj;
+    }
+    function extractIncludes(raw) {
+      const re = /\{\{\s*([^}]+?)\s*\}\}/g;
+      const out = [];
+      let m;
+      while ((m = re.exec(raw))) out.push(m[1].trim());
+      return out;
+    }
+    function extractExports(raw) {
+      const out = new Set();
+      const re1 = /^(?:\s*)(?:export|exports|@export|@exports)\s*[: ]\s*([A-Za-z_][A-Za-z0-9._-]*)/gm;
+      let m;
+      while ((m = re1.exec(raw))) out.add(m[1]);
+      const re2 = /^(?:\s*)(?:exports|@exports)\s*:\s*\[(.*?)\]/m;
+      const m2 = raw.match(re2);
+      if (m2) {
+        const reItem = /"([^"]+)"/g;
+        let mi;
+        while ((mi = reItem.exec(m2[1]))) out.add(mi[1]);
+      }
+      return [...out].sort();
+    }
+
+    function scxq2Unpack(packed) {
+      const bytes = b64urlDecode(packed.trim());
+      const obj = JSON.parse(new TextDecoder().decode(bytes));
+      if (obj.v !== "scxq2-ref-1") throw new Error("bad version");
+      const dict = obj.dict;
+      const docs = {};
+      for (const d of obj.docs) docs[dict[d.p]] = d.t;
+      const edges = obj.edges.map(e => ({ parent: dict[e.a], child: dict[e.b] }));
+      return { root: dict[obj.root], docs, dict, edges };
+    }
+
+    const FORBIDDEN = ["@exec","@eval","@system","@shell","@spawn","process::","std::process","require(","import(","fetch(","@network.","@file.write","@file.delete"];
+
+    async function sha256Hex(str) {
+      const data = new TextEncoder().encode(str);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function declaredAuthority(raw) {
+      const m = raw.match(/^\s*authority\s*:\s*"(none|read|write|net|exec)"/m);
+      return m ? m[1] : "none";
+    }
+
+    async function verify(bundle) {
+      const hits = {};
+      for (const [p, raw] of Object.entries(bundle.docs)) {
+        const ph = [];
+        for (const tok of FORBIDDEN) if (raw.includes(tok)) ph.push(tok);
+        if (ph.length) hits[p] = ph;
+      }
+      if (Object.keys(hits).length) throw new Error("Forbidden tokens: " + JSON.stringify(hits, null, 2));
+
+      for (const [p, raw] of Object.entries(bundle.docs)) {
+        const a = declaredAuthority(raw);
+        if (a !== "none") throw new Error(`Authority not allowed in sealed schemas: ${p} => ${a}`);
+      }
+
+      const nodes = Object.keys(bundle.docs).sort();
+      const adj = new Map(nodes.map(n => [n, []]));
+      const indeg = new Map(nodes.map(n => [n, 0]));
+
+      for (const n of nodes) {
+        const raw = bundle.docs[n];
+        for (const inc of extractIncludes(raw)) {
+          if (bundle.docs[inc]) {
+            adj.get(n).push(inc);
+            indeg.set(inc, (indeg.get(inc) || 0) + 1);
+          } else {
+            const ok = inc.startsWith("asx://") || inc.startsWith("mx2lex://") || inc.startsWith("file://") || inc.endsWith(".schema.xjson");
+            if (!ok) throw new Error(`Include not resolvable and not allowed scheme: ${inc} in ${n}`);
+          }
+        }
+      }
+
+      const q = [];
+      for (const [n, d] of indeg.entries()) if (d === 0) q.push(n);
+      let visited = 0;
+      while (q.length) {
+        const n = q.shift();
+        visited++;
+        for (const k of adj.get(n)) {
+          indeg.set(k, indeg.get(k) - 1);
+          if (indeg.get(k) === 0) q.push(k);
+        }
+      }
+      if (visited !== nodes.length) throw new Error("Cyclic include graph detected");
+
+      const parts = [];
+      for (const p of nodes) parts.push(p + "\n" + (await sha256Hex(bundle.docs[p])) + "\n");
+      const bundleHash = await sha256Hex(parts.join(""));
+
+      return {
+        "@proof": "no_authority_leakage",
+        "@scope": "matrix.schema.bundle",
+        "@result": "verified",
+        "@properties": {
+          "execution": false,
+          "symbol_inheritance": false,
+          "authority_escalation": false,
+          "cycles": false,
+          "docs": nodes.length
+        },
+        "@hash": bundleHash
+      };
+    }
+
+    function emitMx2lexJsonl(bundle) {
+      const lines = [];
+      const nodes = Object.keys(bundle.docs).sort();
+
+      const domainHint = (p) => {
+        const s = p.toLowerCase();
+        if (s.includes("xcfe")) return "language";
+        if (s.includes("asx") || s.includes("xjson")) return "language";
+        if (s.includes("pi") || s.includes("kuhul")) return "engines";
+        if (s.includes("atomic") || s.includes("ggl") || s.includes("svg")) return "projection";
+        return "unknown";
+      };
+
+      for (const p of nodes) {
+        const raw = bundle.docs[p];
+        lines.push(JSON.stringify({
+          table: "mx2lex.schemas",
+          schema_id: p,
+          domain: domainHint(p),
+          status: "sealed",
+          hash: "(use-proof-or-rust-hash)",
+          sealed: true
+        }));
+        for (const sym of extractExports(raw)) {
+          lines.push(JSON.stringify({
+            table: "mx2lex.symbols",
+            symbol: sym,
+            schema_id: p,
+            type: "export",
+            visibility: "explicit"
+          }));
+        }
+        for (const inc of extractIncludes(raw)) {
+          lines.push(JSON.stringify({
+            table: "mx2lex.includes",
+            parent: p,
+            child: inc,
+            mode: "sealed"
+          }));
+        }
+      }
+
+      const dm = new Map();
+      for (const p of nodes) {
+        const d = domainHint(p);
+        if (!dm.has(d)) dm.set(d, []);
+        dm.get(d).push(p);
+      }
+      for (const [domain, schemas] of dm.entries()) {
+        lines.push(JSON.stringify({
+          table: "mx2lex.domain_map",
+          domain,
+          schemas
+        }));
+      }
+
+      return lines.join("\n");
+    }
+
+    const $packed = document.getElementById("packed");
+    const $statusTag = document.getElementById("statusTag");
+    const $proofOut = document.getElementById("proofOut");
+    const $jsonlOut = document.getElementById("jsonlOut");
+    const $graph = document.getElementById("graph");
+    const $selMeta = document.getElementById("selMeta");
+    const $selRaw = document.getElementById("selRaw");
+
+    let state = { bundle: null, proof: null };
+
+    function setStatus(ok, msg) {
+      $statusTag.textContent = "Status: " + msg;
+      $statusTag.className = "tag mono " + (ok ? "ok" : "bad");
+    }
+
+    function renderGraph(bundle) {
+      $graph.innerHTML = "";
+      const nodes = Object.keys(bundle.docs).sort();
+
+      const adj = new Map(nodes.map(n => [n, []]));
+      for (const n of nodes) {
+        const incs = extractIncludes(bundle.docs[n]);
+        for (const inc of incs) if (bundle.docs[inc]) adj.get(n).push(inc);
+      }
+
+      for (const n of nodes) {
+        const div = document.createElement("div");
+        div.className = "node mono";
+        const incs = adj.get(n);
+        div.innerHTML = `
+          <div><b>${escapeHtml(n)}</b></div>
+          <div>includes: ${incs.length ? incs.map(x=>`<span class="tag mono">${escapeHtml(x)}</span>`).join(" ") : "<span class='tag mono'>none</span>"}</div>
+          <div>exports: ${(extractExports(bundle.docs[n]).length || 0)}</div>
+        `;
+        div.addEventListener("click", () => {
+          $selMeta.textContent = JSON.stringify({
+            path: n,
+            includes: extractIncludes(bundle.docs[n]),
+            exports: extractExports(bundle.docs[n]),
+            authority: declaredAuthority(bundle.docs[n]),
+          }, null, 2);
+          $selRaw.textContent = bundle.docs[n];
+        });
+        $graph.appendChild(div);
+      }
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+    }
+
+    function demoPacked() {
+      const dict = ["root.schema.xjson","asx-r.schema.xjson","xcfe.schema.xjson"];
+      const pack = {
+        v: "scxq2-ref-1",
+        dict,
+        docs: [
+          { p: 0, t: `@@schema.control\nname: "Atomic Guide Demo"\nincludes:\n  - {{ asx-r.schema.xjson }}\n  - {{ xcfe.schema.xjson }}\nexports: ["atomic_guide.viewer"]\nauthority: "none"\n` },
+          { p: 1, t: `@@schema\nname: "ASX-R"\nexports: ["@control","@variable"]\nauthority: "none"\n` },
+          { p: 2, t: `@@schema\nname: "XCFE"\nexports: ["@control.flow","@control.guard"]\nauthority: "none"\n` }
+        ],
+        edges: [{a:0,b:1},{a:0,b:2}],
+        root: 0
+      };
+      const bytes = new TextEncoder().encode(JSON.stringify(stableSortKeys(pack)));
+      return b64urlEncode(bytes);
+    }
+
+    document.getElementById("btnDemo").addEventListener("click", () => {
+      $packed.value = demoPacked();
+      setStatus(true, "demo loaded");
+    });
+
+    document.getElementById("btnVerify").addEventListener("click", async () => {
+      try {
+        const bundle = scxq2Unpack($packed.value);
+        state.bundle = bundle;
+        renderGraph(bundle);
+        const proof = await verify(bundle);
+        state.proof = proof;
+        $proofOut.textContent = JSON.stringify(proof, null, 2);
+        setStatus(true, "verified");
+      } catch (e) {
+        $proofOut.textContent = String(e?.message || e);
+        setStatus(false, "rejected");
+      }
+    });
+
+    document.getElementById("btnIndex").addEventListener("click", () => {
+      try {
+        if (!state.bundle) throw new Error("load + verify first");
+        const jsonl = emitMx2lexJsonl(state.bundle);
+        $jsonlOut.textContent = jsonl;
+        setStatus(true, "mx2lex jsonl emitted");
+      } catch (e) {
+        $jsonlOut.textContent = String(e?.message || e);
+        setStatus(false, "index failed");
+      }
+    });
+  </script>
+</body>
+</html>
