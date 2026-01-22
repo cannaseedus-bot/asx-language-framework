@@ -49,38 +49,26 @@ Not a framework.
 
 ---
 
-# 🧬 Packages Included
-
-### **@asx/xjson-runtime-js**
-JavaScript execution layer for XJSON language.
-
-### **@asx/tape-runtime**
-Executes ASX Tapes using the XJSON runtime.
-
-### **@asx/scxq2-engine**
-Symbolic compression + cipher layer powering SCXQ2.
-
-### **@asx/klh-orchestrator**
-Hive-level orchestrator for multi-shard & multi-hive networks.
-
-### **@asx/asx-blocks-core**
-Atomic UI, logic, and OS primitives for Tape & OS builds.
-
----
-
-# 📦 Installation
-
-```bash
-npm install @asx/xjson-runtime-js
-npm install @asx/tape-runtime
-npm install @asx/scxq2-engine
-npm install @asx/klh-orchestrator
-npm install @asx/asx-blocks-core
-```
 
 ---
 
 # 📚 Documentation
+
+- [Getting Started](documentation/getting-started.md)
+- [Integrating PHP with Python](documentation/php-python-integration.md)
+
+---
+
+# 🧰 Tooling & Fixtures
+
+### **ASX ESLint Rules**
+The repo includes an ESLint plugin with additional ASX envelope checks, including:
+
+- Hash-bound import enforcement (`import-hash-bound`)
+- Transitive import authority scanning (`forbidden-transitive-imports`)
+- Flow-sensitive effect propagation (`effects-flow`)
+
+See `asx-ts-compare/tools/eslint-plugin-asx` for implementation and the recommended config export. 
 
 - [Getting Started](documentation/getting-started.md)
 - [Integrating PHP with Python](documentation/php-python-integration.md)

@@ -1,0 +1,6 @@
+{
+  "result": "FAIL",
+  "violations": [
+    { "kind": "effect.undeclared", "domain": "net", "atom": "read", "evidence": "fetch" }
+  ]
+}

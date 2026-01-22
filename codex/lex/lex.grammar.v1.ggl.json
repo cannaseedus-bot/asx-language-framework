@@ -1,0 +1,46 @@
+{
+  "@id": "lex.grammar.v1",
+  "@name": "GGL-Tiny-Subset",
+  "@version": "1.0.0",
+  "@dialect": "ggl.tiny",
+  "@tokens": [
+    { "t": "KW", "v": "Wo" },
+    { "t": "KW", "v": "Sek" },
+    { "t": "KW", "v": "Pop" },
+    { "t": "ID", "re": "[A-Za-z_][A-Za-z0-9_]*" },
+    { "t": "NUM", "re": "[0-9]+(\\.[0-9]+)?" },
+    { "t": "STR", "re": "\"([^\"\\\\]|\\\\.)*\"" },
+    { "t": "SYM", "v": "=" },
+    { "t": "SYM", "v": "->" },
+    { "t": "SYM", "v": "." },
+    { "t": "SYM", "v": ":" }
+  ],
+  "@productions": [
+    { "lhs": "program", "rhs": ["stmt*"] },
+
+    { "lhs": "stmt", "rhs": ["wo_stmt"] },
+    { "lhs": "stmt", "rhs": ["sek_stmt"] },
+    { "lhs": "stmt", "rhs": ["pop_stmt"] },
+
+    { "lhs": "wo_stmt", "rhs": ["Wo", "path", "=", "value"] },
+    { "lhs": "sek_stmt", "rhs": ["Sek", "id", "->", "id", "arrow_tail?"] },
+    { "lhs": "arrow_tail", "rhs": ["->", "id", "arrow_tail?"] },
+    { "lhs": "pop_stmt", "rhs": ["Pop", "path", ":", "value"] },
+
+    { "lhs": "path", "rhs": ["id", "path_tail*"] },
+    { "lhs": "path_tail", "rhs": [".", "id"] },
+
+    { "lhs": "value", "rhs": ["num"] },
+    { "lhs": "value", "rhs": ["str"] },
+    { "lhs": "value", "rhs": ["id"] },
+
+    { "lhs": "id", "rhs": ["ID"] },
+    { "lhs": "num", "rhs": ["NUM"] },
+    { "lhs": "str", "rhs": ["STR"] }
+  ],
+  "@invariants": [
+    { "kind": "deterministic", "rule": "LL(1)-ish; no ambiguous rhs overlap for stmt starts" },
+    { "kind": "no_authority", "rule": "Grammar includes no exec/opcodes; parse only" }
+  ],
+  "@hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+}
