@@ -1,0 +1,25 @@
+{
+  "@id": "mx2lex.weights.bind.v1",
+  "@version": "1.0.0",
+  "@binds": {
+    "@scoring": {
+      "@illegal_transition_penalty": 8.0,
+      "@authority_leak_penalty": 50.0,
+      "@undeclared_effect_penalty": 12.0,
+      "@structure_reward": 3.0,
+      "@determinism_reward": 5.0,
+      "@minimal_surface_reward": 2.0
+    },
+    "@tie_break": [
+      "higher_determinism_reward",
+      "higher_structure_reward",
+      "lower_effect_surface",
+      "lexicographic_hash"
+    ]
+  },
+  "@notes": [
+    "Set illegal_transition_penalty high to suppress schema/grammar escape moves.",
+    "authority_leak_penalty dominates: one forbidden cap beats any structure reward."
+  ],
+  "@hash": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+}

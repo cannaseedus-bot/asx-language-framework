@@ -1,0 +1,7 @@
+{
+  "@meta": { "version": "asx.envelope.v1", "hash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" },
+  "@effects": { "pure": ["compute"] },
+  "@imports": {
+    "transitive": { "deny_effects": ["net"], "deny_caps": ["eval", "Function"], "max_depth": 8 }
+  }
+}

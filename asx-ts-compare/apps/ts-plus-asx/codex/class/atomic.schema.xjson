@@ -1,0 +1,17 @@
+{
+  "@id": "asx://codex/class/atomic.schema.xjson",
+  "@kind": "asx.class.schema.v1",
+  "@name": "atomic",
+  "@version": "1.0.0",
+  "@properties": {
+    "@class": { "type": "string", "const": "atomic" },
+    "@role": { "type": "string", "enum": ["ui", "style", "layout", "projection"] },
+    "@caps": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "@required": ["@class", "@role"],
+  "@additionalProperties": false
+}
