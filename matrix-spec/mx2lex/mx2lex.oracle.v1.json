@@ -1,0 +1,133 @@
+{
+  "@id": "asx://schema/mx2lex.oracle.v1",
+  "@type": "asx.schema.v1",
+  "@schema": "xjson://schema/core/v1",
+  "@status": "FROZEN",
+  "@version": "1.0.0",
+  "@rules": {
+    "bounded": true,
+    "deterministic": true,
+    "offline": true,
+    "no_exec": true,
+    "no_external_schema_urls": true
+  },
+  "@doc": {
+    "name": "MX2LEX Legality Oracle",
+    "purpose": "Given (pack + input text OR token stream), decide legality and provide a bounded trace explaining the first failure (or acceptance)."
+  },
+  "required": ["@type", "@meta", "abi", "input", "output"],
+  "properties": {
+    "@type": { "const": "mx2lex.oracle.v1" },
+    "@meta": {
+      "type": "object",
+      "required": ["id", "semver", "pack_ref", "pack_hash", "policy"],
+      "properties": {
+        "id": { "type": "string" },
+        "semver": { "type": "string" },
+        "pack_ref": { "type": "string" },
+        "pack_hash": { "type": "string", "description": "sha256:<hex> of mx2lex.pack canonical form" },
+        "policy": {
+          "type": "object",
+          "required": ["trace_max_steps", "trace_max_errors", "max_tokens"],
+          "properties": {
+            "trace_max_steps": { "type": "integer", "minimum": 1 },
+            "trace_max_errors": { "type": "integer", "minimum": 1 },
+            "max_tokens": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+    "abi": {
+      "type": "object",
+      "description": "ABI binding rules that stop drift across JS/Python/Java.",
+      "required": ["id", "hash_algo", "bind"],
+      "properties": {
+        "id": { "const": "asx://abi/mx2lex.oracle.abi.v1" },
+        "hash_algo": { "enum": ["sha256"] },
+        "bind": {
+          "type": "array",
+          "description": "Field paths that must be included in ABI hash computation (ordered).",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["mode", "payload"],
+      "properties": {
+        "mode": { "enum": ["text", "tokens"] },
+        "payload": {
+          "type": "object",
+          "description": "If mode=text: {text, normalize:true/false}. If mode=tokens: {tokens:[tokenId...] }.",
+          "properties": {
+            "text": { "type": "string" },
+            "normalize": { "type": "boolean" },
+            "tokens": { "type": "array", "items": { "type": "integer" } }
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": ["ok", "decision", "trace"],
+      "properties": {
+        "ok": { "type": "boolean", "description": "Oracle executed successfully (not same as decision)" },
+        "decision": { "enum": ["PASS", "FAIL"] },
+        "trace": {
+          "type": "object",
+          "required": ["steps", "errors", "summary"],
+          "properties": {
+            "steps": {
+              "type": "array",
+              "description": "Bounded list of DFA steps (token -> next state).",
+              "items": {
+                "type": "object",
+                "required": ["i", "state", "token", "next"],
+                "properties": {
+                  "i": { "type": "integer", "minimum": 0 },
+                  "state": { "type": "integer" },
+                  "token": { "type": "integer" },
+                  "next": { "type": "integer" }
+                }
+              }
+            },
+            "errors": {
+              "type": "array",
+              "description": "Bounded list; first error is the canonical failure point.",
+              "items": {
+                "type": "object",
+                "required": ["i", "state", "token", "code", "msg"],
+                "properties": {
+                  "i": { "type": "integer" },
+                  "state": { "type": "integer" },
+                  "token": { "type": "integer" },
+                  "code": {
+                    "enum": ["TOKENIZE_FAIL", "NO_TRANSITION", "LIMIT_EXCEEDED", "NONCANONICAL_INPUT"]
+                  },
+                  "msg": { "type": "string" }
+                }
+              }
+            },
+            "summary": {
+              "type": "object",
+              "required": ["accepted", "tokens_seen", "final_state"],
+              "properties": {
+                "accepted": { "type": "boolean" },
+                "tokens_seen": { "type": "integer" },
+                "final_state": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "hashes": {
+          "type": "object",
+          "description": "Optional binding outputs (SELF hash, abi hash).",
+          "properties": {
+            "abi_hash": { "type": "string" },
+            "oracle_self": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
