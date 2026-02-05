@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "vocab_size": 65536,
+  "unk_id": 0,
+  "pad_id": 0,
+  "byte_fallback": true,
+  "byte_base_id": 256,
+  "normalization": "nfkc",
+  "symbols": [
+    {"id": 1, "text": "a"},
+    {"id": 2, "text": "b"},
+    {"id": 3, "text": "c"}
+  ]
+}
