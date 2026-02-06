@@ -7,5 +7,7 @@
     "build": "tsc -p .",
     "test": "node dist/test.js || node test.js || exit 0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "fs-extra": "^11.2.0"
+  }
 }
