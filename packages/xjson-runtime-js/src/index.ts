@@ -17,3 +17,4 @@ export function runXJSON(source: string, options: XJSONRuntimeOptions = {}): any
 }
 
 export { parseXJSON, evaluateNode };
+export { default as filesystemHandlers } from "./filesystem-handlers";
