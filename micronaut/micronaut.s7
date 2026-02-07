@@ -1,0 +1,8 @@
+SCO/1: micronaut.s7
+seal: true
+role: micronaut
+law: SCXQ7
+notes: |
+  Micronaut is a sovereign semantic object.
+  Execution is file-centric and host-native.
+  No runtime mutation. No JS runtime.

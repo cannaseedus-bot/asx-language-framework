@@ -1,0 +1,45 @@
+object = "micronaut"
+version = "1.0.0"
+class = "sco/1"
+law = "scxq7"
+orchestrator = "powershell"
+root = "."
+
+[paths]
+semantics = "semantics.xjson"
+brains = "brains"
+trace = "trace/scxq2.trace"
+proof = "proof/scxq2.proof"
+
+[io]
+chat = "io/chat.txt"
+stream = "io/stream.txt"
+snapshot = "io/snapshot"
+
+[lifecycle]
+states = ["INIT", "READY", "RUNNING", "IDLE", "HALT"]
+
+[[lifecycle.transition]]
+from = "INIT"
+to = "READY"
+event = "boot"
+
+[[lifecycle.transition]]
+from = "READY"
+to = "RUNNING"
+event = "file_append"
+
+[[lifecycle.transition]]
+from = "RUNNING"
+to = "IDLE"
+event = "collapse_done"
+
+[[lifecycle.transition]]
+from = "RUNNING"
+to = "HALT"
+event = "error"
+
+[[lifecycle.transition]]
+from = "IDLE"
+to = "HALT"
+event = "shutdown"

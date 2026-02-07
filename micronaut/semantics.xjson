@@ -1,0 +1,19 @@
+{
+  "@schema": "kuhul://schema/tsg/v1",
+  "@name": "micronaut.semantics",
+  "@version": "1.0.0",
+  "@notes": "KUHUL-TSG schema for Micronaut semantic extraction.",
+  "message": {
+    "id": "uuid",
+    "time": "unix_ms",
+    "role": ["user", "system", "micronaut"],
+    "intent": ["chat", "generate", "classify", "complete"],
+    "context": "optional",
+    "payload": "utf8"
+  },
+  "stream": {
+    "format": ">> t=<int> ctx=<symbol> mass=<float>\\n<payload>",
+    "append_only": true,
+    "replayable": true
+  }
+}
